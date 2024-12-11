@@ -18,3 +18,6 @@ Individuals or companies in Chinese Mainland (except Hong Kong China, Macau Chin
 If you wish to obtain authorization to use this repository and its products, please contact the author Sonic853 (sonic853@qq.com) or manually acquire authorization via [爱发电](https://afdian.com/a/Sonic853).
 
 如需获得使用此储存库以及商品的授权，请联系作者 Sonic853 (sonic853@qq.com) 获取授权或访问 [爱发电](https://afdian.com/a/Sonic853) 手动获取授权。
+
+## 二次开发说明
+本项目根据 cnLunar 的 [项目仓库选择及开源模式选择](https://github.com/OPN48/cnlunar?tab=readme-ov-file#%E5%9B%9B%E9%A1%B9%E7%9B%AE%E4%BB%93%E5%BA%93%E9%80%89%E6%8B%A9%E5%8F%8A%E5%BC%80%E6%BA%90%E6%A8%A1%E5%BC%8F%E9%80%89%E6%8B%A9) 说明下使用 GPL 3.0 开源，其它用户在配布世界地图时如有对 UdonCnLunar 的代码做有二次更改，则需将更改后的代码以 GPL 3.0 协议进行开源。
