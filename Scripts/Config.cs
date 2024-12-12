@@ -10,7 +10,20 @@ namespace Sonic853.Udon.CnLunar
     public class Config : UdonSharpBehaviour
     {
         public static string[] STAR_ZODIAC_NAME() => new string[] { "摩羯座", "水瓶座", "双鱼座", "白羊座", "金牛座", "双子座", "巨蟹座", "狮子座", "处女座", "天秤座", "天蝎座", "射手座" };
-        public static int[,] STAR_ZODIAC_DATE() => new int[,] { { 1, 20 }, { 2, 19 }, { 3, 21 }, { 4, 21 }, { 5, 21 }, { 6, 22 }, { 7, 23 }, { 8, 23 }, { 9, 23 }, { 10, 23 }, { 11, 23 }, { 12, 23 } };
+        public static int[][] STAR_ZODIAC_DATE() => new int[][] {
+            new int[] { 1, 20 },
+            new int[] { 2, 19 },
+            new int[] { 3, 21 },
+            new int[] { 4, 21 },
+            new int[] { 5, 21 },
+            new int[] { 6, 22 },
+            new int[] { 7, 23 },
+            new int[] { 8, 23 },
+            new int[] { 9, 23 },    
+            new int[] { 10, 23 },
+            new int[] { 11, 23 },
+            new int[] { 12, 23 }
+        };
         public static int START_YEAR() => 1901;
         public static int MONTH_DAY_BIT() => 12;
         public static int LEAPMONTH_NUM_BIT() => 13;
@@ -58,6 +71,8 @@ namespace Sonic853.Udon.CnLunar
         };
         public static string[] ChineseZodiacNameList() => new string[] { "鼠", "牛", "虎", "兔", "龙", "蛇", "马", "羊", "猴", "鸡", "狗", "猪" };
         public static string Chinese12DayOfficers() => "建除满平定执破危成收开闭";
+        public static int[] EclipticGodNums() => new int[] { 8, 10, 0, 2, 4, 6, 8, 10, 0, 2, 4, 6 };
+        public static int[] DayNames() => new int[] { 0, 1, 4, 5, 7, 10 };
         // 建满平收-黑（黑道）；除危定执-黄（黄道）；成开-皆可用（黄道）；破闭-不可当（黑道）
         public static string[] Chinese12DayGods() => new string[] { "青龙", "明堂", "天刑", "朱雀", "金贵", "天德", "白虎", "玉堂", "天牢", "玄武", "司命", "勾陈" };
         public static string[] DirectionList() => new string[] { "正北", "东北", "正东", "东南", "正南", "西南", "正西", "西北" };
@@ -85,7 +100,7 @@ namespace Sonic853.Udon.CnLunar
             "廿一", "廿二", "廿三", "廿四", "廿五", "廿六", "廿七", "廿八", "廿九", "三十"
         };
         public static string[] UpperNum() => new string[] { "零", "一", "二", "三", "四", "五", "六", "七", "八", "九" };
-        public static string[] WeekDay() => new string[] { "星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期日" };
+        public static string[] WeekDay() => new string[] { "星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六" };
         // 1901-2100年二十节气最小数序列 向量压缩法
         public static long[] ENC_VECTOR_LIST() => new long[] { 4, 19, 3, 18, 4, 19, 4, 19, 4, 20, 4, 20, 6, 22, 6, 22, 6, 22, 7, 22, 6, 21, 6, 21 };
         // 1901-2100年二十节气数据 每个元素的存储格式如下：
