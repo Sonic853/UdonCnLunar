@@ -19,10 +19,10 @@ namespace Sonic853.Udon.CnLunar
                 "1,1", "元旦节"
             },
             {
-                "5,1", "元旦节"
+                "5,1", "国际劳动节"
             },
             {
-                "10,1", "元旦节"
+                "10,1", "国庆节"
             },
         };
         public static DataDictionary LegalLunarHolidaysDic() => new DataDictionary() {
@@ -30,10 +30,16 @@ namespace Sonic853.Udon.CnLunar
                 "1,1", "春节"
             },
             {
+                "1,15", "元宵节"
+            },
+            {
                 "5,5", "端午节"
             },
             {
                 "8,15", "中秋节"
+            },
+            {
+                "12,30", "除夕"
             },
         };
         public static DataList OtherHolidaysList() => new DataList() {

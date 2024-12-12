@@ -10,6 +10,7 @@ using System;
 using System.Text;
 using UdonSharp;
 using UnityEngine;
+using VRC.SDK3.Data;
 using VRC.SDKBase;
 using VRC.Udon;
 
@@ -17,54 +18,58 @@ namespace Sonic853.Udon.CnLunar
 {
     public class Lunar : UdonSharpBehaviour
     {
-        DateTime date = DateTime.Now;
-        string godType = "8char";
-        string year8Char = "year";
-        string month8Char = "";
-        string day8Char = "";
-        int twohourNum = -1;
-        bool isLunarLeapMonth = false;
-        int lunarYear = -1;
-        int lunarMonth = -1;
-        int lunarDay = -1;
-        int spanDays = -1;
-        int[] monthDaysList = new int[0];
-        string lunarYearCn = "";
-        string lunarMonthCn = "";
-        string lunarDayCn = "";
-        bool lunarMonthLong = false;
-        string phaseOfMoon = "";
-        string todaySolarTerms = "";
-        int[][] solarTermsDateList = new int[0][];
-        int nextSolarNum = -1;
-        string nextSolarTerm = "";
-        int nextSolarTermYear = -1;
-        int nextSolarTermsMonth = -1;
-        int nextSolarTermsDay = -1;
-        int _x = -1;
-        int dayHeavenlyEarthNum = -1;
-        int yearEarthNum = -1;
-        int monthEarthNum = -1;
-        int dayEarthNum = -1;
-        int yearHeavenNum = -1;
-        int monthHeavenNum = -1;
-        int dayHeavenNum = -1;
-        int seasonType = -1;
-        int seasonNum = -1;
-        string lunarSeason = "";
-        string[] twohour8CharList = new string[0];
-        string twohour8Char = "";
-        string today12DayOfficer = "";
-        string today12DayGod = "";
-        string dayName = "";
-        string chineseYearZodiac = "";
-        string chineseZodiacClash = "";
-        string zodiacMark6 = "";
-        string[] zodiacMark3List = new string[0];
-        string zodiacWin = "";
-        string zodiacLose = "";
-        string weekDayCn = "";
-        string starZodiac = "";
+        public DateTime date = DateTime.Now;
+        public string godType = "8char";
+        public string year8Char = "year";
+        public string month8Char = "";
+        public string day8Char = "";
+        public int twohourNum = -1;
+        public bool isLunarLeapMonth = false;
+        public int lunarYear = -1;
+        public int lunarMonth = -1;
+        public int lunarDay = -1;
+        public int spanDays = -1;
+        public int[] monthDaysList = new int[0];
+        public string lunarYearCn = "";
+        public string lunarMonthCn = "";
+        public string lunarDayCn = "";
+        public bool lunarMonthLong = false;
+        public string phaseOfMoon = "";
+        public string todaySolarTerms = "";
+        public int[][] thisYearSolarTermsDateList = new int[0][];
+        public int nextSolarNum = -1;
+        public string nextSolarTerm = "";
+        public int nextSolarTermYear = -1;
+        public int nextSolarTermsMonth = -1;
+        public int nextSolarTermsDay = -1;
+        public int _x = -1;
+        public int dayHeavenlyEarthNum = -1;
+        public int yearEarthNum = -1;
+        public int monthEarthNum = -1;
+        public int dayEarthNum = -1;
+        public int yearHeavenNum = -1;
+        public int monthHeavenNum = -1;
+        public int dayHeavenNum = -1;
+        public int seasonType = -1;
+        public int seasonNum = -1;
+        public string lunarSeason = "";
+        public string[] twohour8CharList = new string[0];
+        public string twohour8Char = "";
+        public string today12DayOfficer = "";
+        public string today12DayGod = "";
+        public string dayName = "";
+        public string chineseYearZodiac = "";
+        public string chineseZodiacClash = "";
+        public string zodiacMark6 = "";
+        public string[] zodiacMark3List = new string[0];
+        public string zodiacWin = "";
+        public string zodiacLose = "";
+        public string weekDayCn = "";
+        public string starZodiac = "";
+        public string todayEastZodiac = "";
+        public string today28Star = "";
+        public DataDictionary thisYearSolarTermsDic = new DataDictionary();
+        public string meridians = "";
         void Start()
         {
             Init(DateTime.Now);
@@ -75,7 +80,7 @@ namespace Sonic853.Udon.CnLunar
             date = _date;
             godType = _godType;
             year8Char = _year8Char;
-            twohourNum = date.Hour + 1;
+            twohourNum = (date.Hour + 1) / 2;
             isLunarLeapMonth = false;
             GetLunarDateNum(
                 date,
@@ -102,7 +107,7 @@ namespace Sonic853.Udon.CnLunar
             phaseOfMoon = GetPhaseOfMoon(lunarDay, lunarMonthLong);
             todaySolarTerms = GetTodaySolarTerms(
                 date,
-                out solarTermsDateList,
+                out thisYearSolarTermsDateList,
                 out nextSolarNum,
                 out nextSolarTerm,
                 out nextSolarTermYear,
@@ -166,7 +171,14 @@ namespace Sonic853.Udon.CnLunar
             );
             weekDayCn = GetWeekDayCn(date);
             starZodiac = GetStarZodiac(date);
-            Debug.Log($"_x:{_x}, year8Char:{year8Char}, month8Char:{month8Char}, day8Char:{day8Char}, dayHeavenlyEarthNum:{dayHeavenlyEarthNum}, yearEarthNum:{yearEarthNum}, monthEarthNum:{monthEarthNum}, dayEarthNum:{dayEarthNum}, yearHeavenNum:{yearHeavenNum}, monthHeavenNum:{monthHeavenNum}, dayHeavenNum:{dayHeavenNum}, seasonType:{seasonType}, seasonNum:{seasonNum}, lunarSeason:{lunarSeason}, twohour8Char:{twohour8Char}, dayName:{dayName}, today12DayOfficer:{today12DayOfficer}, today12DayGod:{today12DayGod}, chineseYearZodiac:{chineseYearZodiac}, chineseZodiacClash:{chineseZodiacClash}, starZodiac:{starZodiac}");
+            todayEastZodiac = GetEastZodiac(nextSolarTerm);
+            // self.thisYearSolarTermsDic = dict(zip(SOLAR_TERMS_NAME_LIST, self.thisYearSolarTermsDateList))
+            thisYearSolarTermsDic = GetSolarTermsDic(thisYearSolarTermsDateList);
+            today28Star = GetThe28Stars(date);
+
+            // 哈哈，我写个锤子
+            // angelDemon = GetAngelDemon()
+            meridians = Config.MeridiansName()[twohourNum % 12];
         }
         public static int GetBeginningOfSpringX(
             int nextSolarNum,
@@ -437,9 +449,20 @@ namespace Sonic853.Udon.CnLunar
             }
             return -1;
         }
+        /// <summary>
+        /// 获取今天的节气
+        /// </summary>
+        /// <param name="date"></param>
+        /// <param name="thisYearSolarTermsDateList"></param>
+        /// <param name="nextSolarNum"></param>
+        /// <param name="nextSolarTerm"></param>
+        /// <param name="nextSolarTermYear"></param>
+        /// <param name="nextSolarTermsMonth"></param>
+        /// <param name="nextSolarTermsDay"></param>
+        /// <returns>节气</returns>
         public static string GetTodaySolarTerms(
             DateTime date,
-            out int[][] solarTermsDateList,
+            out int[][] thisYearSolarTermsDateList,
             out int nextSolarNum,
             out string nextSolarTerm,
             out int nextSolarTermYear,
@@ -448,7 +471,8 @@ namespace Sonic853.Udon.CnLunar
         )
         {
             var year = date.Year;
-            solarTermsDateList = GetSolarTermsDateList(year);
+            var solarTermsDateList = GetSolarTermsDateList(year);
+            thisYearSolarTermsDateList = solarTermsDateList;
             var findDate = new int[] { date.Month, date.Day };
             nextSolarNum = GetNextNum(findDate, solarTermsDateList);
             var index = GetIndexInYearSolarTerms(findDate, solarTermsDateList);
@@ -465,6 +489,26 @@ namespace Sonic853.Udon.CnLunar
             nextSolarTermsDay = solarTermsDateList[nextSolarNum][1];
             nextSolarTermYear = year;
             return todaySolarTerm;
+        }
+        public static DataDictionary GetSolarTermsDic(int[][] thisYearSolarTermsDateList)
+        {
+            var SOLAR_TERMS_NAME_LIST = Config.SOLAR_TERMS_NAME_LIST();
+            var thisYearSolarTermsDic = new DataDictionary();
+            for (var i = 0; i < SOLAR_TERMS_NAME_LIST.Length; i++)
+            {
+                var data = new DataList();
+                data.Add(thisYearSolarTermsDateList[i][0]);
+                data.Add(thisYearSolarTermsDateList[i][1]);
+                thisYearSolarTermsDic.Add(SOLAR_TERMS_NAME_LIST[i], data);
+            }
+            return thisYearSolarTermsDic;
+        }
+        public static string GetEastZodiac(string nextSolarTerm)
+        {
+            var NextSolarTermIndex = (Array.IndexOf(Config.SOLAR_TERMS_NAME_LIST(), nextSolarTerm) - 1) % 24;
+            if (NextSolarTermIndex < 0) NextSolarTermIndex += 24;
+            NextSolarTermIndex /= 2;
+            return Config.EAST_ZODIAC_LIST()[NextSolarTermIndex];
         }
         /// <summary>
         /// 八字部分
@@ -497,9 +541,7 @@ namespace Sonic853.Udon.CnLunar
         }
         public static string GetDay8Char(DateTime date, int twohourNum, out int dayHeavenlyEarthNum)
         {
-            // 奇怪的时间解析，提个 issue 吧
             var date2019 = DateTime.Parse("2019-01-29T00:00:00.000+08:00");
-            date2019 = date2019.AddHours(-8);
             var apart = date - date2019;
             var the60HeavenlyEarth = Config.The60HeavenlyEarth();
             var baseNum = Array.IndexOf(the60HeavenlyEarth, "丙寅");
@@ -602,6 +644,11 @@ namespace Sonic853.Udon.CnLunar
             seasonNum = w / 3;
             lunarSeason = $"{"仲季孟"[seasonType]}{"春夏秋冬"[seasonNum]}";
         }
+        /// <summary>
+        /// 星座
+        /// </summary>
+        /// <param name="date"></param>
+        /// <returns></returns>
         public static string GetStarZodiac(DateTime date)
         {
             // return STAR_ZODIAC_NAME[len(list(filter(lambda y: y <= (self.date.month, self.date.day), STAR_ZODIAC_DATE))) % 12]
@@ -619,6 +666,35 @@ namespace Sonic853.Udon.CnLunar
                 }
             }
             return STAR_ZODIAC_NAME[filterLength % 12];
+        }
+        public static string[] GetLegalHolidays(DateTime date, int lunarMonth, int lunarDay, string todaySolarTerms)
+        {
+            var temp = new DataList();
+            var legalsolarTermsHolidayDic = Holidays.LegalsolarTermsHolidayDic();
+            if (legalsolarTermsHolidayDic.TryGetValue(todaySolarTerms, out var value))
+            {
+                // temp += "清明节";
+                temp.Add(value.String);
+            }
+            var legalHolidaysDic = Holidays.LegalHolidaysDic();
+            if (legalHolidaysDic.TryGetValue($"{date.Month},{date.Day}", out value))
+            {
+                temp.Add(value.String);
+            }
+            var legalLunarHolidaysDic = Holidays.LegalLunarHolidaysDic();
+            if (
+                lunarMonth <= 12
+                && legalLunarHolidaysDic.TryGetValue($"{lunarMonth},{lunarDay}", out value)
+            )
+            {
+                temp.Add(value.String);
+            }
+            var _temp = new string[temp.Count];
+            for (var i = 0; i < temp.Count; i++)
+            {
+                _temp[i] = temp[i].String;
+            }
+            return _temp;
         }
         /// <summary>
         /// 建除十二神，《淮南子》曰：正月建寅，则寅为建，卯为除，辰为满，巳为平，主生；午为定，未为执，主陷；申为破，主衡；酉为危，主杓；戍为成，主小德；亥为收，主大备；子为开，主太阳；丑为闭，主太阴。
@@ -657,6 +733,36 @@ namespace Sonic853.Udon.CnLunar
                 dayName = "黑道日";
             }
             return dayName;
+        }
+        /// <summary>
+        /// 八字与五行
+        /// </summary>
+        /// <param name="date"></param>
+        /// <returns></returns>
+        public static string GetThe28Stars(DateTime date)
+        {
+            var date2019 = DateTime.Parse("2019-01-17T00:00:00.000+08:00");
+            var apart = date - date2019;
+            return Config.The28StarsList()[apart.Days % 28];
+        }
+        /// <summary>
+        /// 今日宜忌
+        /// </summary>
+        public static void GetAngelDemon()
+        {
+            // the10HeavenlyStems =['甲', '乙', '丙', '丁', '戊', '己', '庚', '辛', '壬', '癸']
+            // the12EarthlyBranches = ['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥']
+            // 相冲+6
+            // 四绝日：一切用事皆忌之，立春，立夏，立秋，立冬前一日。忌出行、赴任、嫁娶、进人、迁移、开市、立券、祭祀
+            // 四离日：春分、秋分、夏至、冬至前一天。日值四离，大事勿用
+            // 杨公13忌日：忌开张、动工、嫁娶、签订合同
+            // 红纱日、正红纱日：四孟金鸡（酉）四仲蛇（巳），四季丑日是红纱，惟有孟仲合吉用 ，季月逢之俱不佳（正红纱日）
+            // 凤凰日、麒麟日：凤凰压朱雀，麒麟制白虎，克制朱雀白虎中效果。春井，夏尾，秋牛，冬壁，是麒麟日，春危，夏昴，秋胃，冬毕是凤凰日
+            // 月德、月德合:申子辰三合，阳水为壬，月德合丁；巳酉丑三合，阳金为庚，月德合乙；寅午戌三合，阳火为丙，月德合辛；亥卯未三合，阳木为甲，月德合己
+            // 天德、天德合:《子平赋》说：印绶得同天德，官刑不至，至老无灾.
+            // 岁德、岁德合:《协纪辨方书·义例一·岁德》：曾门经曰：岁德者，岁中德神也。https://www.jianshu.com/p/ec0432f31060
+            // 月恩:正月逢丙是月恩，二月见丁三庚真，四月己上五月戊，六辛七壬八癸成，九月庚上十月乙，冬月甲上腊月辛。
+            // 天恩:四季何时是天恩，甲子乙丑丙寅建。丁卯戊辰兼己卯，庚辰辛巳壬午言，癸未隔求己酉日，庚戌辛亥亦同联，壬子癸丑无差误，此是天恩吉日传
         }
     }
 }
