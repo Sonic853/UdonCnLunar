@@ -19,7 +19,7 @@ namespace Sonic853.Udon.CnLunar
             new int[] { 6, 22 },
             new int[] { 7, 23 },
             new int[] { 8, 23 },
-            new int[] { 9, 23 },    
+            new int[] { 9, 23 },
             new int[] { 10, 23 },
             new int[] { 11, 23 },
             new int[] { 12, 23 }
@@ -337,6 +337,1146 @@ namespace Sonic853.Udon.CnLunar
                 }
             }
         };
+        public static DataDictionary BadGodDic() => new DataDictionary() {
+            {
+                "平日", new DataList() {
+                    new DataList() {
+                        "亥",
+                        new DataList() {
+                            "相日", "时德", "六合"
+                        },
+                        0
+                    },
+                    new DataList() {
+                        "巳",
+                        new DataList() {
+                            "相日", "六合", "月刑"
+                        },
+                        1
+                    },
+                    new DataList() {
+                        "申",
+                        new DataList() {
+                            "相日", "月害"
+                        },
+                        2
+                    },
+                    new DataList() {
+                        "寅",
+                        new DataList() {
+                            "相日", "月害", "月刑"
+                        },
+                        3
+                    },
+                    new DataList() {
+                        "卯午酉",
+                        new DataList() {
+                            "天吏"
+                        },
+                        3
+                    },
+                    new DataList() {
+                        "辰戌丑未",
+                        new DataList() {
+                            "月煞"
+                        },
+                        4
+                    },
+                    new DataList() {
+                        "子",
+                        new DataList() {
+                            "天吏", "月刑"
+                        },
+                        4
+                    }
+                }
+            },
+            {
+                "收日", new DataList() {
+                    new DataList() {
+                        "寅申",
+                        new DataList() {
+                            "长生", "六合", "劫煞"
+                        },
+                        0
+                    },
+                    new DataList() {
+                        "巳亥",
+                        new DataList() {
+                            "长生", "劫煞"
+                        },
+                        2
+                    },
+                    new DataList() {
+                        "辰未",
+                        new DataList() {
+                            "月害"
+                        },
+                        2
+                    },
+                    new DataList() {
+                        "子午酉",
+                        new DataList() {
+                            "大时"
+                        },
+                        3
+                    },
+                    new DataList() {
+                        "丑戌",
+                        new DataList() {
+                            "月刑"
+                        },
+                        3
+                    },
+                    new DataList() {
+                        "卯",
+                        new DataList() {
+                            "大时"
+                        },
+                        4
+                    }
+                }
+            },
+            {
+                "闭日", new DataList() {
+                    new DataList() {
+                        "子午卯酉",
+                        new DataList() {
+                            "王日"
+                        },
+                        3
+                    },
+                    new DataList() {
+                        "辰戌丑未",
+                        new DataList() {
+                            "官日", "天吏"
+                        },
+                        3
+                    },
+                    new DataList() {
+                        "寅申巳亥",
+                        new DataList() {
+                            "月煞"
+                        },
+                        4
+                    }
+                }
+            },
+            {
+                "劫煞", new DataList() {
+                    new DataList() {
+                        "寅申",
+                        new DataList() {
+                            "长生", "六合"
+                        },
+                        0
+                    },
+                    new DataList() {
+                        "辰戌丑未",
+                        new DataList() {
+                            "除日", "相日"
+                        },
+                        1
+                    },
+                    new DataList() {
+                        "巳亥",
+                        new DataList() {
+                            "长生", "月害"
+                        },
+                        2
+                    },
+                    new DataList() {
+                        "子午卯酉",
+                        new DataList() {
+                            "执日"
+                        },
+                        3
+                    }
+                }
+            },
+            {
+                "灾煞", new DataList() {
+                    new DataList() {
+                        "寅申巳亥",
+                        new DataList() {
+                            "开日"
+                        },
+                        1
+                    },
+                    new DataList() {
+                        "辰戌丑未",
+                        new DataList() {
+                            "满日", "民日"
+                        },
+                        2
+                    },
+                    new DataList() {
+                        "子午",
+                        new DataList() {
+                            "月破"
+                        },
+                        4
+                    },
+                    new DataList() {
+                        "卯酉",
+                        new DataList() {
+                            "月破", "月厌"
+                        },
+                        5
+                    }
+                }
+            },
+            {
+                "月煞", new DataList() {
+                    new DataList() {
+                        "卯酉",
+                        new DataList() {
+                            "六合", "危日"
+                        },
+                        1
+                    },
+                    new DataList() {
+                        "子午",
+                        new DataList() {
+                            "月害", "危日"
+                        },
+                        3
+                    }
+                }
+            },
+            {
+                "月刑", new DataList() {
+                    new DataList() {
+                        "巳",
+                        new DataList() {
+                            "平日", "六合", "相日"
+                        },
+                        1
+                    },
+                    new DataList() {
+                        "寅",
+                        new DataList() {
+                            "相日", "月害", "平日"
+                        },
+                        3
+                    },
+                    new DataList() {
+                        "辰酉亥",
+                        new DataList() {
+                            "建日"
+                        },
+                        3
+                    },
+                    new DataList() {
+                        "子",
+                        new DataList() {
+                            "平日", "天吏"
+                        },
+                        4
+                    },
+                    new DataList() {
+                        "卯",
+                        new DataList() {
+                            "收日", "大时", "天破"
+                        },
+                        4
+                    },
+                    new DataList() {
+                        "未申",
+                        new DataList() {
+                            "月破"
+                        },
+                        4
+                    },
+                    new DataList() {
+                        "午",
+                        new DataList() {
+                            "月建", "月厌", "德大会"
+                        },
+                        4
+                    }
+                }
+            },
+            {
+                "月害", new DataList() {
+                    new DataList() {
+                        "卯酉",
+                        new DataList() {
+                            "守日", "除日"
+                        },
+                        2
+                    },
+                    new DataList() {
+                        "丑未",
+                        new DataList() {
+                            "执日", "大时"
+                        },
+                        2
+                    },
+                    new DataList() {
+                        "巳亥",
+                        new DataList() {
+                            "长生", "劫煞"
+                        },
+                        2
+                    },
+                    new DataList() {
+                        "申",
+                        new DataList() {
+                            "相日", "平日"
+                        },
+                        2
+                    },
+                    new DataList() {
+                        "子午",
+                        new DataList() {
+                            "月煞"
+                        },
+                        3
+                    },
+                    new DataList() {
+                        "辰戌",
+                        new DataList() {
+                            "官日", "闭日", "天吏"
+                        },
+                        3
+                    },
+                    new DataList() {
+                        "寅",
+                        new DataList() {
+                            "相日", "平日", "月刑"
+                        },
+                        3
+                    }
+                }
+            },
+            {
+                "月厌", new DataList() {
+                    new DataList() {
+                        "寅申",
+                        new DataList() {
+                            "成日"
+                        },
+                        2
+                    },
+                    new DataList() {
+                        "丑未",
+                        new DataList() {
+                            "开日"
+                        },
+                        2
+                    },
+                    new DataList() {
+                        "辰戌",
+                        new DataList() {
+                            "定日"
+                        },
+                        3
+                    },
+                    new DataList() {
+                        "已亥",
+                        new DataList() {
+                            "满日"
+                        },
+                        3
+                    },
+                    new DataList() {
+                        "子",
+                        new DataList() {
+                            "月建", "德大会"
+                        },
+                        4
+                    },
+                    new DataList() {
+                        "午",
+                        new DataList() {
+                            "月建", "月刑", "德大会"
+                        },
+                        4
+                    },
+                    new DataList() {
+                        "卯酉",
+                        new DataList() {
+                            "月破", "灾煞"
+                        },
+                        5
+                    }
+                }
+            },
+            {
+                "大时", new DataList() {
+                    new DataList() {
+                        "寅申已亥",
+                        new DataList() {
+                            "除日", "官日"
+                        },
+                        0
+                    },
+                    new DataList() {
+                        "辰戌",
+                        new DataList() {
+                            "执日", "六合"
+                        },
+                        0
+                    },
+                    new DataList() {
+                        "丑未",
+                        new DataList() {
+                            "执日", "月害"
+                        },
+                        2
+                    },
+                    new DataList() {
+                        "子午酉",
+                        new DataList() {
+                            "收日"
+                        },
+                        3
+                    },
+                    new DataList() {
+                        "卯",
+                        new DataList() {
+                            "收日", "月刑"
+                        },
+                        4
+                    }
+                }
+            },
+            {
+                "天吏", new DataList() {
+                    new DataList() {
+                        "寅申已亥",
+                        new DataList() {
+                            "危日"
+                        },
+                        2
+                    },
+                    new DataList() {
+                        "辰戌丑未",
+                        new DataList() {
+                            "闭日"
+                        },
+                        3
+                    },
+                    new DataList() {
+                        "卯午酉",
+                        new DataList() {
+                            "平日"
+                        },
+                        3
+                    },
+                    new DataList() {
+                        "子",
+                        new DataList() {
+                            "平日", "月刑"
+                        },
+                        4
+                    }
+                }
+            }
+        };
+        public static DataList LevelList() => new DataList() {
+            "上：吉足胜凶，从宜不从忌。",
+            "上次：吉足抵凶，遇德从宜不从忌，不遇从宜亦从忌。",
+            "中：吉不抵凶，遇德从宜不从忌，不遇从忌不从宜。",
+            "中次：凶胜于吉，遇德从宜亦从忌，不遇从忌不从宜。",
+            "下：凶又逢凶，遇德从忌不从宜，不遇诸事皆忌。",
+            "下下：凶叠大凶，遇德亦诸事皆忌。（卯酉月，灾煞遇月破、月厌，月厌遇灾煞、月破）",
+        };
+        public static DataList ThingLevelList() => new DataList() {
+            "从宜不从忌",
+            "从宜亦从忌",
+            "从忌不从宜",
+            "诸事皆忌",
+        };
+        public static string[] ThingLevelStrings() => new string[] {
+            "岁德", "岁德合", "月德", "月德合", "天德", "天德合"
+        };
+        public static string[] ThingFishStrings() => new string[] {
+            "执", "危", "收"
+        };
+        public static int[][] MrY13() => new int[][] {
+            new int[] { 1, 13 },
+            new int[] { 2, 11 },
+            new int[] { 3, 9 },
+            new int[] { 4, 7 },
+            new int[] { 5, 5 },
+            new int[] { 6, 2 },
+            new int[] { 7, 1 },
+            new int[] { 7, 29 },
+            new int[] { 8, 27 },
+            new int[] { 9, 25 },
+            new int[] { 10, 23 },
+            new int[] { 11, 21 },
+            new int[] { 12, 19 }
+        };
+        public static DataList Angel(
+            int yhn,
+            int men,
+            int sn,
+            int den,
+            int dhen,
+            string d,
+            string s
+        )
+        {
+            var denmenInt = den - men;
+            if (denmenInt < 0) denmenInt += 4;
+            var denmen = denmenInt % 4 == 0;
+            return new DataList() {
+                new DataList() {
+                    "岁德",
+                    "甲庚丙壬戊甲庚丙壬戊"[yhn].ToString(),
+                    d,
+                    new DataList() {
+                        "修造", "嫁娶", "纳采", "搬移", "入宅"
+                    },
+                    new DataList() { }
+                },
+                // 岁德、岁德合：年天干对日天干["修造","动土","嫁娶","纳采","移徙","入宅","百事皆宜"] 天干相合+5  20190206
+                new DataList() {
+                    "岁德合",
+                    "己乙辛丁癸己乙辛丁癸"[yhn].ToString(),
+                    d,
+                    new DataList() {
+                        "修造", "赴任", "嫁娶", "纳采", "搬移", "入宅", "出行"
+                    },
+                    new DataList() { }
+                }, // 修营、起土，上官。嫁娶、远行，参谒
+                new DataList() {
+                    "月德",
+                    "壬庚丙甲壬庚丙甲壬庚丙甲"[men].ToString(),
+                    d[0].ToString(),
+                    new DataList() {
+                        "祭祀", "祈福", "求嗣", "上册", "上表章", "颁诏", "覃恩", "施恩", "招贤", "举正直", "恤孤茕", "宣政事", "雪冤", "庆赐", "宴会", "出行",
+                        "安抚边境", "选将", "出师", "上官", "临政", "结婚姻", "纳采", "嫁娶", "搬移", "解除", "求医疗病", "裁制", "营建", "缮城郭", "修造", "竖柱上梁",
+                        "修仓库", "栽种", "牧养", "纳畜", "安葬"
+                    },
+                    new DataList() {
+                        "畋猎", "取鱼"
+                    }
+                },
+                // 月德20190208《天宝历》曰：“月德者，月之德神也。取土、修营宜向其方，宴乐、上官利用其日。
+                new DataList() {
+                    "月德",
+                    "丁乙辛己丁乙辛己丁乙辛己"[men].ToString(),
+                    d[0].ToString(),
+                    new DataList() {
+                        "祭祀", "祈福", "求嗣", "上册", "上表章", "颁诏", "覃恩", "施恩", "招贤", "举正直", "恤孤茕", "宣政事", "雪冤", "庆赐", "宴会", "出行",
+                        "安抚边境", "选将", "出师", "上官", "临政", "结婚姻", "纳采", "嫁娶", "搬移", "解除", "求医疗病", "裁制", "营建", "缮城郭", "修造", "竖柱上梁",
+                        "修仓库", "栽种", "牧养", "纳畜", "安葬"
+                    },
+                    new DataList() {
+                        "畋猎", "取鱼"
+                    }
+                },
+                new DataList() {
+                    "天德",
+                    "巳庚丁申壬辛亥甲癸寅丙乙"[men].ToString(),
+                    d,
+                    new DataList() {
+                        "祭祀", "祈福", "求嗣", "上册", "上表章", "颁诏", "覃恩", "施恩", "招贤", "举正直", "恤孤茕", "宣政事", "雪冤", "庆赐", "宴会", "出行",
+                        "安抚边境", "选将", "出师", "上官", "临政", "结婚姻", "纳采", "嫁娶", "搬移", "解除", "求医疗病", "裁制", "营建", "缮城郭", "修造", "竖柱上梁",
+                        "修仓库", "栽种", "牧养", "纳畜", "安葬"
+                    },
+                    new DataList() {
+                        "畋猎", "取鱼"
+                    }
+                }, // 天德"巳庚丁申壬辛亥甲癸寅丙乙"天德合"申乙壬巳丁丙寅己戊亥辛庚"
+                new DataList() {
+                    "天德合",
+                    "空乙壬空丁丙空己戊空辛庚"[men].ToString(),
+                    d,
+                    new DataList() {
+                        "祭祀", "祈福", "求嗣", "上册", "上表章", "颁诏", "覃恩", "施恩", "招贤", "举正直", "恤孤茕", "宣政事", "雪冤", "庆赐", "宴会", "出行",
+                        "安抚边境", "选将", "出师", "上官", "临政", "结婚姻", "纳采", "嫁娶", "搬移", "解除", "求医疗病", "裁制", "营建", "缮城郭", "修造", "竖柱上梁",
+                        "修仓库", "栽种", "牧养", "纳畜", "安葬"
+                    },
+                    new DataList() {
+                        "畋猎", "取鱼"
+                    }
+                },
+                new DataList() {
+                    "凤凰日",
+                    s[0].ToString(),
+                    "危昴胃毕"[sn].ToString(),
+                    new DataList() {
+                        "嫁娶"
+                    },
+                    new DataList() { }
+                },
+                new DataList() {
+                    "麒麟日",
+                    s[0].ToString(),
+                    "井尾牛壁"[sn].ToString(),
+                    new DataList() {
+                        "嫁娶"
+                    },
+                    new DataList() { }
+                }, // 凤凰日、麒麟日（麒麟日测试日期2019.03.07）
+
+                new DataList() {
+                    "三合",
+                    denmen,
+                    new DataList() {
+                        true
+                    },
+                    new DataList() {
+                        "庆赐", "宴会", "结婚姻", "纳采", "嫁娶", "进人口", "裁制", "修宫室", "缮城郭", "修造", "竖柱上梁", "修仓库", "经络", "酝酿", "立券交易", "纳财",
+                        "安碓硙", "纳畜"
+                    },
+                    new DataList() { }
+                }, // 三合数在地支上相差4个顺位
+                new DataList() {
+                    "四相",
+                    d[0].ToString(),
+                    new string[] { "丙丁", "戊己", "壬癸", "甲乙"}[sn],
+                    new DataList() {
+                        "祭祀", "祈福", "求嗣", "施恩", "举正直", "庆赐", "宴会", "出行", "上官", "临政", "结婚姻", "纳采", "搬移", "解除", "求医疗病", "裁制", "修宫室",
+                        "缮城郭", "修造", "竖柱上梁", "纳财", "开仓", "栽种", "牧养"
+                    },
+                    new DataList() { }
+                },
+                // 《总要历》曰：“四相者，四时王相之辰也。其日宜修营、起工、养育，生财、栽植、种莳、移徙、远行，曰：“春丙丁，夏戊己，秋壬癸，冬甲乙。
+                new DataList() {
+                    "五合",
+                    d[1].ToString(),
+                    "寅卯",
+                    new DataList() {
+                        "宴会", "结婚姻", "立券交易"
+                    },
+                    new DataList() { }
+                },
+                new DataList() {
+                    "五富",
+                    "巳申亥寅巳申亥寅巳申亥寅"[men].ToString(),
+                    d,
+                    new DataList() {
+                        "经络", "酝酿", "开市", "立券交易", "纳财", "开仓", "栽种", "牧养", "纳畜"
+                    },
+                    new DataList() { }
+                },
+                new DataList() {
+                    "六合",
+                    "丑子亥戌酉申未午巳辰卯寅"[men].ToString(),
+                    d,
+                    new DataList() {
+                        "宴会", "结婚姻", "嫁娶", "进人口", "经络", "酝酿", "立券交易", "纳财", "纳畜", "安葬"
+                    },
+                    new DataList() { }
+                },
+                new DataList() {
+                    "六仪",
+                    "午巳辰卯寅丑子亥戌酉申未"[men].ToString(),
+                    d,
+                    new DataList() {
+                        "临政"
+                    },
+                    new DataList() { }
+                }, // 厌对招摇
+
+                new DataList() {
+                    "不将",
+                    d,
+                    Bujiang()[men],
+                    new DataList() {
+                        "嫁娶"
+                    },
+                    new DataList() { }
+                },
+                new DataList() {
+                    "时德",
+                    "午辰子寅"[sn].ToString(),
+                    d[1].ToString(),
+                    new DataList() {
+                        "祭祀", "祈福", "求嗣", "施恩", "举正直", "庆赐", "宴会", "出行", "上官", "临政", "结婚姻", "纳采", "搬移", "解除", "求医疗病", "裁制", "修宫室",
+                        "缮城郭", "修造", "竖柱上梁", "纳财", "开仓", "栽种", "牧养"
+                    },
+                    new DataList() { }
+                }, // 时德:春午 夏辰 秋子 冬寅 20190204
+                new DataList() {
+                    "大葬",
+                    d,
+                    "壬申癸酉壬午甲申乙酉丙申丁酉壬寅丙午己酉庚申辛酉",
+                    new DataList() {
+                        "安葬"
+                    },
+                    new DataList() { }
+                },
+                new DataList() {
+                    "鸣吠",
+                    d,
+                    "庚午壬申癸酉壬午甲申乙酉己酉丙申丁酉壬寅丙午庚寅庚申辛酉",
+                    new DataList() {
+                        "破土", "安葬"
+                    },
+                    new DataList() { }
+                },
+                new DataList() {
+                    "小葬",
+                    d,
+                    "庚午壬辰甲辰乙巳甲寅丙辰庚寅",
+                    new DataList() {
+                        "安葬"
+                    },
+                    new DataList() { }
+                },
+                new DataList() {
+                    "鸣吠对",
+                    d,
+                    "丙寅丁卯丙子辛卯甲午庚子癸卯壬子甲寅乙卯",
+                    new DataList() {
+                        "破土", "启攒"
+                    },
+                    new DataList() { }
+                }, // （改）
+                new DataList() {
+                    "不守塚",
+                    d,
+                    "庚午辛未壬申癸酉戊寅己卯壬午癸未甲申乙酉丁未甲午乙未丙申丁酉壬寅癸卯丙午戊申己酉庚申辛酉",
+                    new DataList() {
+                        "破土"
+                    },
+                    new DataList() { }
+                },
+                // 《钦定协纪辨方书 卷五》《历例》 王日、官日、守日、相日、民日
+                new DataList() {
+                    "王日",
+                    "寅巳申亥"[sn].ToString(),
+                    d[1].ToString(),
+                    new DataList() {
+                        "颁诏", "覃恩", "施恩", "招贤", "举正直", "恤孤茕", "宣政事", "雪冤", "庆赐", "宴会", "出行", "安抚边境", "选将", "上官", "临政", "裁制"
+                    },
+                    new DataList() { }
+                },
+                new DataList() {
+                    "官日",
+                    "卯午酉子"[sn].ToString(),
+                    d[1].ToString(),
+                    new DataList() {
+                        "上官", "临政"
+                    },
+                    new DataList() { }
+                },
+                new DataList() {
+                    "守日",
+                    "酉子卯午"[sn].ToString(),
+                    d[1].ToString(),
+                    new DataList() {
+                        "安抚边境", "上官", "临政"
+                    },
+                    new DataList() { }
+                },
+                new DataList() {
+                    "相日",
+                    "巳申亥寅"[sn].ToString(),
+                    d[1].ToString(),
+                    new DataList() {
+                        "上官", "临政"
+                    },
+                    new DataList() { }
+                },
+                new DataList() {
+                    "民日",
+                    "午酉子卯"[sn].ToString(),
+                    d[1].ToString(),
+                    new DataList() {
+                        "宴会", "结婚姻", "纳采", "进人口", "搬移", "开市", "立券交易", "纳财", "栽种", "牧养", "纳畜"
+                    },
+                    new DataList() { }
+                },
+                new DataList() {
+                    "临日",
+                    "辰酉午亥申丑戌卯子巳寅未"[sn].ToString(),
+                    d.ToString(),
+                    new DataList() {
+                        "上册", "上表章", "上官", "临政"
+                    },
+                    new DataList() { }
+                }, // 正月午日、二月亥日、三月申日、四月丑日等为临日
+                new DataList() {
+                    "天贵",
+                    d[0].ToString(),
+                    new string[] {"甲乙", "丙丁", "庚辛", "壬癸"}[sn].ToString(),
+                    new DataList() { },
+                    new DataList() { }
+                }, // 20190216
+                new DataList() {
+                    "天喜",
+                    "申酉戌亥子丑寅卯辰巳午未"[men].ToString(),
+                    d[1].ToString(),
+                    new DataList() {
+                        "施恩", "举正直", "庆赐", "宴会", "出行", "上官", "临政", "结婚姻", "纳采", "嫁娶"
+                    },
+                    new DataList() { }
+                },
+                new DataList() {
+                    "天富",
+                    "寅卯辰巳午未申酉戌亥子丑"[men].ToString(),
+                    d,
+                    new DataList() {
+                        "安葬", "修仓库"
+                    },
+                    new DataList() { }
+                },
+                new DataList() {
+                    "天恩",
+                    dhen % 15 < 5 && (dhen / 15) != 2,
+                    new DataList() {
+                        true
+                    },
+                    new DataList() {
+                        "覃恩", "恤孤茕", "布政事", "雪冤", "庆赐", "宴会"
+                    },
+                    new DataList() { }
+                },
+                // 《五行论》曰：“月恩者，阳建所生之干也，子母相从谓之月恩。其日宜营造，婚姻、移徙，祭祀，上官，纳财。”
+                new DataList() {
+                    "月恩",
+                    "甲辛丙丁庚己戊辛壬癸庚乙"[men].ToString(),
+                    d,
+                    new DataList() {
+                        "祭祀", "祈福", "求嗣", "施恩", "举正直", "庆赐", "宴会", "出行", "上官", "临政", "结婚姻", "纳采", "搬移", "解除", "求医疗病", "裁制", "修宫室",
+                        "缮城郭", "修造", "竖柱上梁", "纳财", "开仓", "栽种", "牧养"
+                    },
+                    new DataList() { }
+                },
+                new DataList() {
+                    "天赦",
+                    new string[] {"甲子", "甲子", "戊寅", "戊寅", "戊寅", "甲午", "甲午", "甲午", "戊申", "戊申", "戊申", "甲子"}[men],
+                    d,
+                    new DataList() {
+                        "祭祀", "祈福", "求嗣", "上册", "上表章", "颁诏", "覃恩", "施恩", "招贤", "举正直", "恤孤茕", "宣政事", "雪冤", "庆赐", "宴会", "出行",
+                        "安抚边境", "选将", "上官", "临政", "结婚姻", "纳采", "嫁娶", "搬移", "解除", "求医疗病", "裁制", "营建", "缮城郭", "修造", "竖柱上梁", "修仓库",
+                        "栽种", "牧养", "纳畜", "安葬"
+                    },
+                    new DataList() {
+                        "畋猎", "取鱼"
+                    }
+                },
+                new DataList() {
+                    "天愿",
+                    new string[] {"甲子", "癸未", "甲午", "甲戌", "乙酉", "丙子", "丁丑", "戊午", "甲寅", "丙辰", "辛卯", "戊辰"}[men],
+                    d,
+                    new DataList() {
+                        "祭祀", "祈福", "求嗣", "上册", "上表章", "颁诏", "覃恩", "施恩", "招贤", "举正直", "恤孤茕", "宣政事", "雪冤", "庆赐", "宴会", "出行",
+                        "安抚边境", "选将", "上官", "临政", "结婚姻", "纳采", "嫁娶", "进人口", "搬移", "裁制", "营建", "缮城郭", "修造", "竖柱上梁", "修仓库", "经络",
+                        "酝酿", "开市", "立券交易", "纳财", "栽种", "牧养", "纳畜", "安葬"
+                    },
+                    new DataList() { }
+                },
+                new DataList() {
+                    "天成",
+                    "卯巳未酉亥丑卯巳未酉亥丑"[men].ToString(),
+                    d,
+                    new DataList() { },
+                    new DataList() { }
+                },
+                new DataList() {
+                    "天官",
+                    "午申戌子寅辰午申戌子寅辰"[men].ToString(),
+                    d,
+                    new DataList() { },
+                    new DataList() { }
+                },
+                new DataList() {
+                    "天医",
+                    "亥子丑寅卯辰巳午未申酉戌"[men].ToString(),
+                    d,
+                    new DataList() {
+                        "求医疗病" // 《总要历》曰：“天医者，人之巫医。其日宜请药，避病、寻巫、祷祀。
+                    },
+                    new DataList() { }
+                },
+                new DataList() {
+                    "天马",
+                    "寅辰午申戌子寅辰午申戌子"[men].ToString(),
+                    d,
+                    new DataList() {
+                        "出行", "搬移"
+                    },
+                    new DataList() { }
+                }, // （改）
+                new DataList() {
+                    "驿马",
+                    "寅亥申巳寅亥申巳寅亥申巳"[men].ToString(),
+                    d,
+                    new DataList() {
+                        "出行", "搬移"
+                    },
+                    new DataList() { }
+                },
+                new DataList() {
+                    "天财",
+                    "子寅辰午申戌子寅辰午申戌"[men].ToString(),
+                    d,
+                    new DataList() { },
+                    new DataList() { }
+                },
+                new DataList() {
+                    "福生",
+                    "寅申酉卯戌辰亥巳子午丑未"[men].ToString(),
+                    d,
+                    new DataList() {
+                        "祭祀", "祈福"
+                    },
+                    new DataList() { }
+                },
+                new DataList() {
+                    "福厚",
+                    "寅巳申亥"[sn].ToString(),
+                    d,
+                    new DataList() { },
+                    new DataList() { }
+                },
+                new DataList() {
+                    "福德",
+                    "寅卯辰巳午未申酉戌亥子丑"[men].ToString(),
+                    d,
+                    new DataList() {
+                        "上册", "上表章", "庆赐", "宴会", "修宫室", "缮城郭"
+                    },
+                    new DataList() { }
+                },
+                new DataList() {
+                    "天巫",
+                    "寅卯辰巳午未申酉戌亥子丑"[men].ToString(),
+                    d,
+                    new DataList() {
+                        "求医疗病"
+                    },
+                    new DataList() { }
+                },
+
+                new DataList() {
+                    "地财",
+                    "丑卯巳未酉亥丑卯巳未酉亥"[men].ToString(),
+                    d,
+                    new DataList() { },
+                    new DataList() { }
+                },
+                new DataList() {
+                    "月财",
+                    "酉亥午巳巳未酉亥午巳巳未"[men].ToString(),
+                    d,
+                    new DataList() { },
+                    new DataList() { }
+                },
+                new DataList() {
+                    "月空",
+                    "丙甲壬庚丙甲壬庚丙甲壬庚"[men].ToString(),
+                    d,
+                    new DataList() {
+                        "上表章"
+                    },
+                    new DataList() { }
+                }, // 《天宝历》曰：“月中之阳辰也。所理之日宜设筹谋。陈计策。（改）
+                new DataList() {
+                    "母仓",
+                    d[1].ToString(),
+                    new string[] {"亥子", "寅卯", "辰丑戌未", "申酉"}[sn].ToString(),
+                    new DataList() {
+                        "纳财", "栽种", "牧养", "纳畜"
+                    },
+                    new DataList() { }
+                },
+                new DataList() {
+                    "明星",
+                    "辰午甲戌子寅辰午甲戌子寅"[men].ToString(),
+                    d,
+                    new DataList() {
+                        "赴任", "诉讼", "安葬"
+                    },
+                    new DataList() { }
+                },
+                new DataList() {
+                    "圣心",
+                    "辰戌亥巳子午丑未寅申卯酉"[men].ToString(),
+                    d,
+                    new DataList() {
+                        "祭祀", "祈福"
+                    },
+                    new DataList() { }
+                },
+                new DataList() {
+                    "禄库",
+                    "寅卯辰巳午未申酉戌亥子丑"[men].ToString(),
+                    d,
+                    new DataList() {
+                        "纳财"
+                    },
+                    new DataList() { }
+                },
+
+                new DataList() {
+                    "吉庆",
+                    "未子酉寅亥辰丑午卯申巳戌"[men].ToString(),
+                    d,
+                    new DataList() { },
+                    new DataList() { }
+                },
+                new DataList() {
+                    "阴德",
+                    "丑亥酉未巳卯丑亥酉未巳卯"[men].ToString(),
+                    d,
+                    new DataList() {
+                        "恤孤茕", "雪冤"
+                    },
+                    new DataList() { }
+                },
+                new DataList() {
+                    "活曜",
+                    "卯申巳戌未子酉寅亥辰丑午"[men].ToString(),
+                    d,
+                    new DataList() { },
+                    new DataList() { }
+                },
+                new DataList() {
+                    "除神",
+                    d[1].ToString(),
+                    "申酉",
+                    new DataList() {
+                        "解除", "沐浴", "整容", "剃头", "整手足甲", "求医疗病", "扫舍宇" // 五离
+                    },
+                    new DataList() { }
+                },
+                new DataList() {
+                    "解神",
+                    "午午申申戌戌子子寅寅辰辰"[men].ToString(),
+                    d,
+                    new DataList() {
+                        "上表章", "解除", "沐浴", "整容", "剃头", "整手足甲", "求医疗病"
+                    },
+                    new DataList() { }
+                },
+                new DataList() {
+                    "生气",
+                    "戌亥子丑寅卯辰巳午未申酉"[men].ToString(),
+                    d,
+                    new DataList() { },
+                    new DataList() {
+                        "伐木", "畋猎", "取鱼"
+                    }
+                },
+                new DataList() {
+                    "普护",
+                    "丑卯申寅酉卯戌辰亥巳子午"[men].ToString(),
+                    d,
+                    new DataList() {
+                        "祭祀", "祈福"
+                    },
+                    new DataList() { }
+                },
+                new DataList() {
+                    "益后",
+                    "巳亥子午丑未寅申卯酉辰戌"[men].ToString(),
+                    d,
+                    new DataList() {
+                        "祭祀", "祈福", "求嗣"
+                    },
+                    new DataList() { }
+                },
+                new DataList() {
+                    "续世",
+                    "午子丑未寅申卯酉辰戌巳亥"[men].ToString(),
+                    d,
+                    new DataList() {
+                        "祭祀", "祈福", "求嗣"
+                    },
+                    new DataList() { }
+                },
+                new DataList() {
+                    "要安",
+                    "未丑寅申卯酉辰戌巳亥午子"[men].ToString(),
+                    d,
+                    new DataList() { },
+                    new DataList() { }
+                },
+                new DataList() {
+                    "天后",
+                    "寅亥申巳寅亥申巳寅亥申巳"[men].ToString(),
+                    d,
+                    new DataList() {
+                        "求医疗病"
+                    },
+                    new DataList() { }
+                },
+                new DataList() {
+                    "天仓",
+                    "辰卯寅丑子亥戌酉申未午巳"[men].ToString(),
+                    d,
+                    new DataList() {
+                        "进人口", "纳财", "纳畜"
+                    },
+                    new DataList() { }
+                },
+                // 《总要历》曰:天仓者,天库之神也。其日可以修仓库、受赏赐、纳财、牧养。《历例》曰:天仓者,正月起寅,逆行十二辰。
+                new DataList() {
+                    "敬安",
+                    "子午未丑申寅酉卯戌辰亥巳"[men].ToString(),
+                    d,
+                    new DataList() { },
+                    new DataList() { }
+                }, // 恭顺之神当值
+                new DataList() {
+                    "玉宇",
+                    "申寅卯酉辰戌巳亥午子未丑"[men].ToString(),
+                    d,
+                    new DataList() { },
+                    new DataList() { }
+                },
+                new DataList() {
+                    "金堂",
+                    "酉卯辰戌巳亥午子未丑申寅"[men].ToString(),
+                    d,
+                    new DataList() { },
+                    new DataList() { }
+                },
+                new DataList() {
+                    "吉期",
+                    "丑寅卯辰巳午未申酉戌亥子"[men].ToString(),
+                    d,
+                    new DataList() {
+                        "施恩", "举正直", "出行", "上官", "临政"
+                    },
+                    new DataList() { }
+                },
+                new DataList() {
+                    "小时",
+                    "子丑寅卯辰巳午未申酉戌亥"[men].ToString(),
+                    d,
+                    new DataList() { },
+                    new DataList() { }
+                },
+                new DataList() {
+                    "兵福",
+                    "子丑寅卯辰巳午未申酉戌亥"[men].ToString(),
+                    d,
+                    new DataList() {
+                        "安抚边境", "选将", "出师"
+                    },
+                    new DataList() { }
+                },
+                new DataList() {
+                    "兵宝",
+                    "丑寅卯辰巳午未申酉戌亥子"[men].ToString(),
+                    d,
+                    new DataList() {
+                        "安抚边境", "选将", "出师"
+                    },
+                    new DataList() { }
+                },
+                new DataList() {
+                    "兵吉",
+                    d[1].ToString(),
+                    new string[] {"寅卯辰巳", "丑寅卯辰", "子丑寅卯", "亥子丑寅", "戌亥子丑", "酉戌亥子", "申酉戌亥", "未申酉戌", "午未申酉", "巳午未申", "辰巳午未", "卯辰巳午"}[men],
+                    new DataList() {
+                        "安抚边境", "选将", "出师"
+                    },
+                    new DataList() { }
+                },
+            };
+        }
         public static DataDictionary Day8CharThing() => new DataDictionary() {
             {
                 "甲", new DataList() {

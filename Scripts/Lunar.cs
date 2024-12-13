@@ -13,6 +13,8 @@ using UnityEngine;
 using VRC.SDK3.Data;
 using VRC.SDKBase;
 using VRC.Udon;
+using Sonic853.Udon.CnLunar.Extensions;
+using System.Linq;
 
 namespace Sonic853.Udon.CnLunar
 {
@@ -70,6 +72,8 @@ namespace Sonic853.Udon.CnLunar
         public string today28Star = "";
         public DataDictionary thisYearSolarTermsDic = new DataDictionary();
         public string meridians = "";
+        public string[] goodGodNames;
+        public string[] badGodNames;
         void Start()
         {
             Init(DateTime.Now);
@@ -80,10 +84,9 @@ namespace Sonic853.Udon.CnLunar
             date = _date;
             godType = _godType;
             year8Char = _year8Char;
-            twohourNum = (date.Hour + 1) / 2;
+            twohourNum = this.GetTwohourNum();
             isLunarLeapMonth = false;
-            GetLunarDateNum(
-                date,
+            this.GetLunarDateNum(
                 out lunarYear,
                 out lunarMonth,
                 out lunarDay,
@@ -92,21 +95,15 @@ namespace Sonic853.Udon.CnLunar
                 out monthDaysList
             );
             Debug.Log($"year:{lunarYear}, month:{lunarMonth}, day:{lunarDay}, isLunarLeapMonth:{isLunarLeapMonth}, spanDays:{spanDays}");
-            GetLunarCn(
-                lunarYear,
-                lunarMonth,
-                lunarDay,
-                isLunarLeapMonth,
-                monthDaysList,
+            this.GetLunarCn(
                 out lunarYearCn,
                 out lunarMonthCn,
                 out lunarDayCn,
                 out lunarMonthLong
             );
             Debug.Log($"lunarYearCn:{lunarYearCn}, lunarMonthCn:{lunarMonthCn}, lunarDayCn:{lunarDayCn}, lunarMonthLong:{lunarMonthLong}");
-            phaseOfMoon = GetPhaseOfMoon(lunarDay, lunarMonthLong);
-            todaySolarTerms = GetTodaySolarTerms(
-                date,
+            phaseOfMoon = this.GetPhaseOfMoon();
+            todaySolarTerms = this.GetTodaySolarTerms(
                 out thisYearSolarTermsDateList,
                 out nextSolarNum,
                 out nextSolarTerm,
@@ -115,70 +112,53 @@ namespace Sonic853.Udon.CnLunar
                 out nextSolarTermsDay
             );
             // 立春干支参数
-            _x = GetBeginningOfSpringX(nextSolarNum, spanDays, _year8Char);
+            _x = this.GetBeginningOfSpringX();
 
-            GetThe8char(
-                date,
-                lunarYear,
-                _x,
-                nextSolarNum,
-                twohourNum,
+            this.GetThe8char(
                 out year8Char,
                 out month8Char,
                 out day8Char,
                 out dayHeavenlyEarthNum
             );
-            GetEarthNum(
-                year8Char,
-                month8Char,
-                day8Char,
+            this.GetEarthNum(
                 out yearEarthNum,
                 out monthEarthNum,
                 out dayEarthNum
             );
-            GetHeavenNum(
-                year8Char,
-                month8Char,
-                day8Char,
+            this.GetHeavenNum(
                 out yearHeavenNum,
                 out monthHeavenNum,
                 out dayHeavenNum
             );
-            GetSeason(
-                monthEarthNum,
+            this.GetSeason(
                 out seasonType,
                 out seasonNum,
                 out lunarSeason
             );
-            twohour8CharList = GetTwohour8CharList(day8Char);
-            twohour8Char = GetTwohour8Char(twohour8CharList, twohourNum);
-            dayName = GetToday12DayOfficer(
-                godType,
-                lunarMonth,
-                monthEarthNum,
-                dayEarthNum,
+            twohour8CharList = this.GetTwohour8CharList();
+            twohour8Char = this.GetTwohour8Char();
+            dayName = this.GetToday12DayOfficer(
                 out today12DayOfficer,
                 out today12DayGod
             );
 
-            chineseYearZodiac = GetChineseYearZodiac(lunarYear, _x);
-            chineseZodiacClash = GetChineseZodiacClash(
-                dayEarthNum,
+            chineseYearZodiac = this.GetChineseYearZodiac();
+            chineseZodiacClash = this.GetChineseZodiacClash(
                 out zodiacMark6,
                 out zodiacMark3List,
                 out zodiacWin,
                 out zodiacLose
             );
-            weekDayCn = GetWeekDayCn(date);
-            starZodiac = GetStarZodiac(date);
-            todayEastZodiac = GetEastZodiac(nextSolarTerm);
+            weekDayCn = this.GetWeekDayCn();
+            starZodiac = this.GetStarZodiac();
+            todayEastZodiac = this.GetEastZodiac();
             // self.thisYearSolarTermsDic = dict(zip(SOLAR_TERMS_NAME_LIST, self.thisYearSolarTermsDateList))
             thisYearSolarTermsDic = GetSolarTermsDic(thisYearSolarTermsDateList);
-            today28Star = GetThe28Stars(date);
+            today28Star = this.GetThe28Stars();
 
             // 哈哈，我写个锤子
             // angelDemon = GetAngelDemon()
-            meridians = Config.MeridiansName()[twohourNum % 12];
+            meridians = this.GetMeridians();
         }
         public static int GetBeginningOfSpringX(
             int nextSolarNum,
@@ -336,7 +316,6 @@ namespace Sonic853.Udon.CnLunar
             }
             monthDaysList = new int[] { monthDay, leapMonth, leapDays };
         }
-        public static void GetLunarDateNum(DateTime date, out int lunarYear, out int lunarMonth, out int lunarDay) => GetLunarDateNum(date, out lunarYear, out lunarMonth, out lunarDay, out _, out _, out _);
         /// <summary>
         /// 获取数字形式的农历日期
         /// 返回的月份，高4bit为闰月月份，低4bit为其它正常月份
@@ -568,7 +547,17 @@ namespace Sonic853.Udon.CnLunar
             return twohour8CharList;
         }
         public static string GetTwohour8Char(string[] twohour8CharList, int twohourNum) => twohour8CharList[twohourNum % 12];
-        public static void GetThe8char(DateTime date, int lunarYear, int _x, int nextSolarNum, int twohourNum, out string year8Char, out string month8Char, out string day8Char, out int dayHeavenlyEarthNum)
+        public static void GetThe8char(
+            DateTime date,
+            int lunarYear,
+            int _x,
+            int nextSolarNum,
+            int twohourNum,
+            out string year8Char,
+            out string month8Char,
+            out string day8Char,
+            out int dayHeavenlyEarthNum
+        )
         {
             year8Char = GetYear8Char(lunarYear, _x);
             month8Char = GetMonth8Char(date, nextSolarNum);
@@ -667,7 +656,12 @@ namespace Sonic853.Udon.CnLunar
             }
             return STAR_ZODIAC_NAME[filterLength % 12];
         }
-        public static string[] GetLegalHolidays(DateTime date, int lunarMonth, int lunarDay, string todaySolarTerms)
+        public static string[] GetLegalHolidays(
+            DateTime date,
+            int lunarMonth,
+            int lunarDay,
+            string todaySolarTerms
+        )
         {
             var temp = new DataList();
             var legalsolarTermsHolidayDic = Holidays.LegalsolarTermsHolidayDic();
@@ -689,8 +683,9 @@ namespace Sonic853.Udon.CnLunar
             {
                 temp.Add(value.String);
             }
-            var _temp = new string[temp.Count];
-            for (var i = 0; i < temp.Count; i++)
+            var tempCount = temp.Count;
+            var _temp = new string[tempCount];
+            for (var i = 0; i < tempCount; i++)
             {
                 _temp[i] = temp[i].String;
             }
@@ -699,9 +694,16 @@ namespace Sonic853.Udon.CnLunar
         /// <summary>
         /// 建除十二神，《淮南子》曰：正月建寅，则寅为建，卯为除，辰为满，巳为平，主生；午为定，未为执，主陷；申为破，主衡；酉为危，主杓；戍为成，主小德；亥为收，主大备；子为开，主太阳；丑为闭，主太阴。
         /// </summary>
-        public static string GetToday12DayOfficer(string godType, int lunarMonth, int monthEarthNum, int dayEarthNum, out string today12DayOfficer, out string today12DayGod)
+        public static string GetToday12DayOfficer(
+            string godType,
+            int lunarMonth,
+            int monthEarthNum,
+            int dayEarthNum,
+            out string today12DayOfficer,
+            out string today12DayGod
+        )
         {
-            // chinese12DayGods=['青龙','明堂','天刑','朱雀','金贵','天德','白虎','玉堂','天牢','玄武','司命','勾陈']
+            // chinese12DayGods=["青龙","明堂","天刑","朱雀","金贵","天德","白虎","玉堂","天牢","玄武","司命","勾陈"]
             int men;
             if (godType == "cnlunar")
             {
@@ -745,13 +747,137 @@ namespace Sonic853.Udon.CnLunar
             var apart = date - date2019;
             return Config.The28StarsList()[apart.Days % 28];
         }
+        public static int GetTwohourNum(DateTime date) => (date.Hour + 1) / 2;
+        public static string GetMeridians(int twohourNum) => Config.MeridiansName()[twohourNum % 12];
         /// <summary>
-        /// 今日宜忌
+        /// 宜忌等第表 计算凶吉
         /// </summary>
-        public static void GetAngelDemon()
+        public static int GetTodayThingLevel(
+            string month8Char,
+            string[] goodGodNames,
+            string[] badGodNames,
+            string today12DayOfficer,
+            out int todayLevel,
+            out string todayLevelName,
+            out string thingLevelName,
+            out bool isDe
+        )
         {
-            // the10HeavenlyStems =['甲', '乙', '丙', '丁', '戊', '己', '庚', '辛', '壬', '癸']
-            // the12EarthlyBranches = ['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥']
+            var badGodDic = Config.BadGodDic();
+            var todayAllGodNames = new string[goodGodNames.Length + badGodNames.Length + 1];
+            Array.Copy(goodGodNames, todayAllGodNames, goodGodNames.Length);
+            Array.Copy(badGodNames, 0, todayAllGodNames, goodGodNames.Length, badGodNames.Length);
+            todayAllGodNames[goodGodNames.Length + badGodNames.Length] = $"{today12DayOfficer}日";
+            var l = -1;
+            foreach (var gnoItem in todayAllGodNames)
+            {
+                if (
+                    badGodDic.TryGetValue(gnoItem, out var value)
+                    && value.TokenType == TokenType.DataList
+                )
+                {
+                    var valueList = value.DataList;
+                    var valueListCount = valueList.Count;
+                    for (var i = 0; i < valueListCount; i++)
+                    {
+                        var item = valueList[i].DataList;
+                        if (
+                            item[0].String.Contains(month8Char[1])
+                            && item[1].TokenType == TokenType.DataList
+                        )
+                        {
+                            var godnames = item[1].DataList;
+                            var itemInt = item[2].Int;
+                            for (var j = 0; j < godnames.Count; j++)
+                            {
+                                var godname = godnames[j].String;
+                                if (
+                                    todayAllGodNames.Contains(godname)
+                                    && itemInt > l
+                                )
+                                {
+                                    l = itemInt;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            var levelList = Config.LevelList();
+            todayLevel = l;
+            todayLevelName = l == -1 ? "无" : levelList[l].String;
+            var thingLevelList = Config.ThingLevelList();
+            isDe = false;
+            var thingLevelStrings = Config.ThingLevelStrings();
+            foreach (var goodGodName in goodGodNames)
+            {
+                if (thingLevelStrings.Contains(goodGodName))
+                {
+                    isDe = true;
+                    break;
+                }
+            }
+            var thingLevel = -1;
+            switch (l)
+            {
+                // 下下：凶叠大凶，遇德亦诸事皆忌；卯酉月 灾煞遇 月破、月厌  月厌遇灾煞、月破；
+                case 5:
+                    thingLevel = 3;
+                    break;
+                // 下：凶又逢凶，遇德从忌不从宜，不遇诸事皆忌；
+                case 4:
+                    thingLevel = isDe ? 2 : 3;
+                    break;
+                // 中次：凶胜于吉，遇德从宜亦从忌，不遇从忌不从宜；
+                case 3:
+                    thingLevel = isDe ? 1 : 2;
+                    break;
+                // 中：吉不抵凶，遇德从宜不从忌，不遇从忌不从宜；
+                case 2:
+                    thingLevel = isDe ? 0 : 2;
+                    break;
+                // 上次：吉足抵凶，遇德从宜不从忌，不遇从宜亦从忌；
+                case 1:
+                    thingLevel = isDe ? 0 : 1;
+                    break;
+                // 上：吉足胜凶，从宜不从忌；
+                case 0:
+                    thingLevel = 0;
+                    break;
+                // 无，例外 从宜不从忌
+                default:
+                    thingLevel = 1;
+                    break;
+            }
+            thingLevelName = thingLevelList[thingLevel].String;
+            return thingLevel;
+        }
+        /// <summary>
+        /// 神煞宜忌
+        /// </summary>
+        public static void GetAngelDemon(
+            DateTime date,
+            DataDictionary thisYearSolarTermsDic,
+            string today12DayOfficer,
+            string today28Star,
+            string day8Char,
+            string godType,
+            string phaseOfMoon,
+            int dayEarthNum,
+            int dayHeavenlyEarthNum,
+            int seasonNum,
+            int yearHeavenNum,
+            int yearEarthNum,
+            int monthEarthNum,
+            int lunarDay,
+            int lunarMonth,
+            int nextSolarTermYear,
+            int nextSolarNum
+        )
+        {
+            // the10HeavenlyStems =["甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸"]
+            // the12EarthlyBranches = ["子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"]
             // 相冲+6
             // 四绝日：一切用事皆忌之，立春，立夏，立秋，立冬前一日。忌出行、赴任、嫁娶、进人、迁移、开市、立券、祭祀
             // 四离日：春分、秋分、夏至、冬至前一天。日值四离，大事勿用
@@ -763,6 +889,173 @@ namespace Sonic853.Udon.CnLunar
             // 岁德、岁德合:《协纪辨方书·义例一·岁德》：曾门经曰：岁德者，岁中德神也。https://www.jianshu.com/p/ec0432f31060
             // 月恩:正月逢丙是月恩，二月见丁三庚真，四月己上五月戊，六辛七壬八癸成，九月庚上十月乙，冬月甲上腊月辛。
             // 天恩:四季何时是天恩，甲子乙丑丙寅建。丁卯戊辰兼己卯，庚辰辛巳壬午言，癸未隔求己酉日，庚戌辛亥亦同联，壬子癸丑无差误，此是天恩吉日传
+            var officerThings = Config.OfficerThings();
+            var goodThing = new DataList();
+            var badThing = new DataList();
+            if (
+                officerThings.TryGetValue(today12DayOfficer, out var dataToken)
+                && dataToken.TokenType == TokenType.DataList
+            )
+            {
+                var dataList = dataToken.DataList;
+                if (dataList.Count > 0)
+                {
+                    goodThing = dataList[0].DataList;
+                }
+                if (dataList.Count > 1)
+                {
+                    badThing = dataList[1].DataList;
+                }
+            }
+            var gbDic = new DataDictionary() {
+                {
+                    "goodName", new DataList()
+                },
+                {
+                    "badName", new DataList()
+                },
+                {
+                    "goodThing", goodThing
+                },
+                {
+                    "badThing", badThing
+                },
+            };
+            var mrY13 = Config.MrY13();
+            var tomorrow = date + TimeSpan.FromDays(1);
+            var tomorrowAsInt = tomorrow.Month * 100 + tomorrow.Day;
+            var t4larr = new string[] { "春分", "夏至", "秋分", "冬至" };
+            var t4jarr = new string[] { "立春", "立夏", "立秋", "立冬" };
+            var t4l = new DataList();
+            // var t4lInts = new DataList();
+            DataToken value;
+            foreach (var i in t4larr)
+            {
+                if (
+                    thisYearSolarTermsDic.TryGetValue(i, out value)
+                    && value.TokenType == TokenType.DataList
+                )
+                {
+                    var valueDataList = value.DataList;
+                    // t4lInts.Add(valueDataList[0].Int * 100 + valueDataList[1].Int);
+                    t4l.Add(valueDataList);
+                }
+            }
+            var t4j = new DataList();
+            var t4jInts = new DataList();
+            var filteredCount = 0;
+            foreach (var i in t4jarr)
+            {
+                if (
+                    thisYearSolarTermsDic.TryGetValue(i, out value)
+                    && value.TokenType == TokenType.DataList
+                )
+                {
+                    var valueDataList = value.DataList;
+                    var t4jInt = valueDataList[0].Int * 100 + valueDataList[1].Int;
+                    t4jInts.Add(t4jInt);
+                    if (t4jInt < tomorrowAsInt)
+                    {
+                        filteredCount++;
+                    }
+                    t4j.Add(valueDataList);
+                }
+            }
+            var twys = new int[2];
+            if (t4j.TryGetValue(filteredCount % 4, out value))
+            {
+                twys[0] = value.DataList[0].Int;
+                twys[1] = value.DataList[1].Int;
+            }
+            var s = today28Star;
+            var o = today12DayOfficer;
+            var d = day8Char;
+            var den = dayEarthNum;
+            var dhen = dayHeavenlyEarthNum;
+            var sn = seasonNum; // 季节
+            var yhn = yearHeavenNum;
+            var yen = yearEarthNum;
+            var ldn = lunarDay;
+            var lmn = lunarMonth;
+            int men;
+            if (godType == "cnlunar")
+            {
+                // 使用农历月份与八字日柱算神煞（辨方书文字） 农历(1-12)，-1改编号，[0-11]，+2位移，% 12 防止溢出
+                men = (lmn - 1 + 2) % 12;
+            }
+            else
+            {
+                // 使用八字月柱与八字日柱算神煞（辨方书配图和部分文字）
+                men = monthEarthNum;
+            }
+            var day8CharThings = Config.Day8CharThing();
+            // item参数规则，（name,当日判断结果,判断规则,宜事,忌事）
+            var day8CharThingKeys = day8CharThings.GetKeys();
+            for (int i = 0; i < day8CharThingKeys.Count; i++)
+            {
+                var key = day8CharThingKeys[i].String;
+                if (
+                   d.Contains(key)
+                   && day8CharThings.TryGetValue(key, out value)
+                   && value.TokenType == TokenType.DataList
+                )
+                {
+                    var valueList = value.DataList;
+                    gbDic["goodThing"].DataList.AddRange(valueList[0].DataList);
+                    gbDic["badThing"].DataList.AddRange(valueList[1].DataList);
+                }
+            }
+            // 雨水后立夏前执日、危日、收日 宜 取鱼
+            // if self.nextSolarNum in range(4, 9) and o in ['执', '危', '收']:
+            var thingFishStrings = Config.ThingFishStrings();
+            if (nextSolarNum >= 4 && nextSolarNum < 9 && thingFishStrings.Contains(o))
+            {
+                var dataList = gbDic["goodThing"].DataList;
+                if (!dataList.Contains("取鱼"))
+                    gbDic["goodThing"].DataList.Add("取鱼");
+            }
+            // 霜降后立春前执日、危日、收日 宜 畋猎
+            // if (self.nextSolarNum in range(20, 24) or self.nextSolarNum in range(0, 3)) and o in ['执', '危', '收']:
+            if ((nextSolarNum >= 20 && nextSolarNum < 24 || nextSolarNum >= 0 && nextSolarNum < 3) && thingFishStrings.Contains(o))
+            {
+                var dataList = gbDic["goodThing"].DataList;
+                if (!dataList.Contains("畋猎"))
+                    gbDic["goodThing"].DataList.Add("畋猎");
+            }
+            // 立冬后立春前危日 午日 申日 宜 伐木
+            // if (self.nextSolarNum in range(21, 24) or self.nextSolarNum in range(0, 3)) and (o in ['危'] or d in ['午', '申']):
+            if ((nextSolarNum >= 21 && nextSolarNum < 24 || nextSolarNum >= 0 && nextSolarNum < 3) && (o == "危" || d == "午" || d == "申"))
+            {
+                var dataList = gbDic["goodThing"].DataList;
+                if (!dataList.Contains("伐木"))
+                    gbDic["goodThing"].DataList.Add("伐木");
+            }
+            // 每月一日 六日 十五 十九日 二十一日 二十三日 忌 整手足甲
+            var days = new int[] { 1, 6, 15, 19, 21, 23 };
+            if (days.Contains(ldn))
+            {
+                var dataList = gbDic["badThing"].DataList;
+                if (!dataList.Contains("整手足甲"))
+                    gbDic["badThing"].DataList.Add("整手足甲");
+            }
+            // 每月十二日 十五日 忌 整容剃头
+            if (ldn == 12 || ldn == 15)
+            {
+                var dataList = gbDic["badThing"].DataList;
+                if (!dataList.Contains("整容"))
+                    gbDic["badThing"].DataList.Add("整容");
+                if (!dataList.Contains("剃头"))
+                    gbDic["badThing"].DataList.Add("剃头");
+            }
+            // 每月十五日 朔弦望月 忌 求医疗病
+            if (ldn == 15 || !string.IsNullOrEmpty(phaseOfMoon))
+            {
+                var dataList = gbDic["badThing"].DataList;
+                if (!dataList.Contains("求医疗病"))
+                    gbDic["badThing"].DataList.Add("求医疗病");
+            }
+            // 由于正月建寅，men参数使用排序是从子开始，所以对照书籍需要将循环八字列向右移两位，也就是映射正月的是在第三个字
+            var angel = new DataList();
         }
     }
 }
