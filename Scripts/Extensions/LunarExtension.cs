@@ -336,6 +336,7 @@ namespace Sonic853.Udon.CnLunar.Extensions
         /// <returns></returns>
         public static string GetStarZodiac(this Lunar lunar) => Lunar.GetStarZodiac(lunar.date);
         public static string[] GetLegalHolidays(this Lunar lunar) => Lunar.GetLegalHolidays(
+            lunar.holidays,
             lunar.date,
             lunar.lunarMonth,
             lunar.lunarDay,
@@ -377,20 +378,76 @@ namespace Sonic853.Udon.CnLunar.Extensions
         /// <summary>
         /// 今日宜忌
         /// </summary>
-        // public static void GetAngelDemon(this Lunar lunar) => Lunar.GetAngelDemon(
-        //     lunar.date,
-        //     lunar.thisYearSolarTermsDic,
-        //     lunar.today12DayOfficer,
-        //     lunar.today28Star,
-        //     lunar.day8Char,
-        //     lunar.dayEarthNum,
-        //     lunar.dayHeavenlyEarthNum,
-        //     lunar.seasonNum,
-        //     lunar.yearHeavenNum,
-        //     lunar.yearEarthNum,
-        //     lunar.lunarDay,
-        //     lunar.lunarMonth,
-        //     lunar.godType
-        // );
+        public static void GetAngelDemon(
+            this Lunar lunar,
+            out int todayLevel,
+            out string todayLevelName,
+            out string thingLevelName,
+            out bool isDe,
+            out string[] goodGodNames,
+            out string[] badGodNames,
+            out string[] goodThings,
+            out string[] badThings
+        ) => Lunar.GetAngelDemon(
+            lunar.config,
+            lunar.date,
+            lunar.thisYearSolarTermsDic,
+            lunar.today12DayOfficer,
+            lunar.today28Star,
+            lunar.day8Char,
+            lunar.godType,
+            lunar.phaseOfMoon,
+            lunar.month8Char,
+            lunar.dayEarthNum,
+            lunar.dayHeavenlyEarthNum,
+            lunar.seasonNum,
+            lunar.yearHeavenNum,
+            lunar.yearEarthNum,
+            lunar.monthEarthNum,
+            lunar.lunarDay,
+            lunar.lunarMonth,
+            lunar.nextSolarTermYear,
+            lunar.nextSolarNum,
+            out todayLevel,
+            out todayLevelName,
+            out thingLevelName,
+            out isDe,
+            out goodGodNames,
+            out badGodNames,
+            out goodThings,
+            out badThings
+        );
+        /// <summary>
+        /// 今日宜忌
+        /// </summary>
+        public static void GetAngelDemon(this Lunar lunar) => Lunar.GetAngelDemon(
+            lunar.config,
+            lunar.date,
+            lunar.thisYearSolarTermsDic,
+            lunar.today12DayOfficer,
+            lunar.today28Star,
+            lunar.day8Char,
+            lunar.godType,
+            lunar.phaseOfMoon,
+            lunar.month8Char,
+            lunar.dayEarthNum,
+            lunar.dayHeavenlyEarthNum,
+            lunar.seasonNum,
+            lunar.yearHeavenNum,
+            lunar.yearEarthNum,
+            lunar.monthEarthNum,
+            lunar.lunarDay,
+            lunar.lunarMonth,
+            lunar.nextSolarTermYear,
+            lunar.nextSolarNum,
+            out lunar.todayLevel,
+            out lunar.todayLevelName,
+            out lunar.thingLevelName,
+            out lunar.isDe,
+            out lunar.goodGodNames,
+            out lunar.badGodNames,
+            out lunar.goodThings,
+            out lunar.badThings
+        );
     }
 }

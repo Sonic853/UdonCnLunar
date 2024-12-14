@@ -14,12 +14,13 @@ using VRC.SDK3.Data;
 using VRC.SDKBase;
 using VRC.Udon;
 using Sonic853.Udon.CnLunar.Extensions;
-using System.Linq;
 
 namespace Sonic853.Udon.CnLunar
 {
     public class Lunar : UdonSharpBehaviour
     {
+        public Config config;
+        public Holidays holidays;
         public DateTime date = DateTime.Now;
         public string godType = "8char";
         public string year8Char = "year";
@@ -74,6 +75,12 @@ namespace Sonic853.Udon.CnLunar
         public string meridians = "";
         public string[] goodGodNames;
         public string[] badGodNames;
+        public string[] goodThings;
+        public string[] badThings;
+        public int todayLevel;
+        public string todayLevelName;
+        public string thingLevelName;
+        public bool isDe;
         void Start()
         {
             Init(DateTime.Now);
@@ -156,8 +163,16 @@ namespace Sonic853.Udon.CnLunar
             thisYearSolarTermsDic = GetSolarTermsDic(thisYearSolarTermsDateList);
             today28Star = this.GetThe28Stars();
 
-            // 哈哈，我写个锤子
-            // angelDemon = GetAngelDemon()
+            this.GetAngelDemon(
+                out todayLevel,
+                out todayLevelName,
+                out thingLevelName,
+                out isDe,
+                out goodGodNames,
+                out badGodNames,
+                out goodThings,
+                out badThings
+            );
             meridians = this.GetMeridians();
         }
         public static int GetBeginningOfSpringX(
@@ -279,7 +294,7 @@ namespace Sonic853.Udon.CnLunar
         /// <returns></returns>
         public static string GetWeekDayCn(DateTime date) => Config.WeekDay()[(int)date.DayOfWeek];
         /// <summary>
-        /// 农历月数
+        /// 农历月数<br />
         /// 计算阴历月天数
         /// </summary>
         /// <param name="lunarYear">农历年</param>
@@ -317,7 +332,7 @@ namespace Sonic853.Udon.CnLunar
             monthDaysList = new int[] { monthDay, leapMonth, leapDays };
         }
         /// <summary>
-        /// 获取数字形式的农历日期
+        /// 获取数字形式的农历日期<br />
         /// 返回的月份，高4bit为闰月月份，低4bit为其它正常月份
         /// </summary>
         /// <param name="date">日期</param>
@@ -657,6 +672,7 @@ namespace Sonic853.Udon.CnLunar
             return STAR_ZODIAC_NAME[filterLength % 12];
         }
         public static string[] GetLegalHolidays(
+            Holidays holidays,
             DateTime date,
             int lunarMonth,
             int lunarDay,
@@ -664,18 +680,18 @@ namespace Sonic853.Udon.CnLunar
         )
         {
             var temp = new DataList();
-            var legalsolarTermsHolidayDic = Holidays.LegalsolarTermsHolidayDic();
+            var legalsolarTermsHolidayDic = holidays.LegalsolarTermsHolidayDic;
             if (legalsolarTermsHolidayDic.TryGetValue(todaySolarTerms, out var value))
             {
                 // temp += "清明节";
                 temp.Add(value.String);
             }
-            var legalHolidaysDic = Holidays.LegalHolidaysDic();
+            var legalHolidaysDic = holidays.LegalHolidaysDic;
             if (legalHolidaysDic.TryGetValue($"{date.Month},{date.Day}", out value))
             {
                 temp.Add(value.String);
             }
-            var legalLunarHolidaysDic = Holidays.LegalLunarHolidaysDic();
+            var legalLunarHolidaysDic = holidays.LegalLunarHolidaysDic;
             if (
                 lunarMonth <= 12
                 && legalLunarHolidaysDic.TryGetValue($"{lunarMonth},{lunarDay}", out value)
@@ -724,6 +740,7 @@ namespace Sonic853.Udon.CnLunar
             // 辶为吉神(0, 1, 4, 5, 7, 10)
             // 为黄道吉日
             var eclipticGodNum = (dayEarthNum - Config.EclipticGodNums()[men]) % 12;
+            if (eclipticGodNum < 0) eclipticGodNum += 12;
             today12DayGod = Config.Chinese12DayGods()[eclipticGodNum % 12];
             string dayName;
             if (Array.IndexOf(Config.DayNames(), eclipticGodNum) != -1)
@@ -753,6 +770,7 @@ namespace Sonic853.Udon.CnLunar
         /// 宜忌等第表 计算凶吉
         /// </summary>
         public static int GetTodayThingLevel(
+            Config config,
             string month8Char,
             string[] goodGodNames,
             string[] badGodNames,
@@ -763,7 +781,7 @@ namespace Sonic853.Udon.CnLunar
             out bool isDe
         )
         {
-            var badGodDic = Config.BadGodDic();
+            var badGodDic = config.BadGodDic;
             var todayAllGodNames = new string[goodGodNames.Length + badGodNames.Length + 1];
             Array.Copy(goodGodNames, todayAllGodNames, goodGodNames.Length);
             Array.Copy(badGodNames, 0, todayAllGodNames, goodGodNames.Length, badGodNames.Length);
@@ -792,7 +810,7 @@ namespace Sonic853.Udon.CnLunar
                             {
                                 var godname = godnames[j].String;
                                 if (
-                                    todayAllGodNames.Contains(godname)
+                                    Array.IndexOf(todayAllGodNames, godname) != -1
                                     && itemInt > l
                                 )
                                 {
@@ -804,15 +822,16 @@ namespace Sonic853.Udon.CnLunar
                     }
                 }
             }
-            var levelList = Config.LevelList();
+            var levelList = config.LevelList;
             todayLevel = l;
             todayLevelName = l == -1 ? "无" : levelList[l].String;
-            var thingLevelList = Config.ThingLevelList();
+            var thingLevelList = config.ThingLevelList;
             isDe = false;
             var thingLevelStrings = Config.ThingLevelStrings();
             foreach (var goodGodName in goodGodNames)
             {
-                if (thingLevelStrings.Contains(goodGodName))
+                // if (thingLevelStrings.Contains(goodGodName))
+                if (Array.IndexOf(thingLevelStrings, goodGodName) != -1)
                 {
                     isDe = true;
                     break;
@@ -857,6 +876,7 @@ namespace Sonic853.Udon.CnLunar
         /// 神煞宜忌
         /// </summary>
         public static void GetAngelDemon(
+            Config config,
             DateTime date,
             DataDictionary thisYearSolarTermsDic,
             string today12DayOfficer,
@@ -864,6 +884,7 @@ namespace Sonic853.Udon.CnLunar
             string day8Char,
             string godType,
             string phaseOfMoon,
+            string month8Char,
             int dayEarthNum,
             int dayHeavenlyEarthNum,
             int seasonNum,
@@ -873,7 +894,15 @@ namespace Sonic853.Udon.CnLunar
             int lunarDay,
             int lunarMonth,
             int nextSolarTermYear,
-            int nextSolarNum
+            int nextSolarNum,
+            out int todayLevel,
+            out string todayLevelName,
+            out string thingLevelName,
+            out bool isDe,
+            out string[] goodGodNames,
+            out string[] badGodNames,
+            out string[] goodThings,
+            out string[] badThings
         )
         {
             // the10HeavenlyStems =["甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸"]
@@ -889,7 +918,7 @@ namespace Sonic853.Udon.CnLunar
             // 岁德、岁德合:《协纪辨方书·义例一·岁德》：曾门经曰：岁德者，岁中德神也。https://www.jianshu.com/p/ec0432f31060
             // 月恩:正月逢丙是月恩，二月见丁三庚真，四月己上五月戊，六辛七壬八癸成，九月庚上十月乙，冬月甲上腊月辛。
             // 天恩:四季何时是天恩，甲子乙丑丙寅建。丁卯戊辰兼己卯，庚辰辛巳壬午言，癸未隔求己酉日，庚戌辛亥亦同联，壬子癸丑无差误，此是天恩吉日传
-            var officerThings = Config.OfficerThings();
+            var officerThings = config.OfficerThings;
             var goodThing = new DataList();
             var badThing = new DataList();
             if (
@@ -907,23 +936,11 @@ namespace Sonic853.Udon.CnLunar
                     badThing = dataList[1].DataList;
                 }
             }
-            var gbDic = new DataDictionary() {
-                {
-                    "goodName", new DataList()
-                },
-                {
-                    "badName", new DataList()
-                },
-                {
-                    "goodThing", goodThing
-                },
-                {
-                    "badThing", badThing
-                },
-            };
+            var gbDic = Config.GbDic(goodThing, badThing);
             var mrY13 = Config.MrY13();
             var tomorrow = date + TimeSpan.FromDays(1);
-            var tomorrowAsInt = tomorrow.Month * 100 + tomorrow.Day;
+            var tmd = new int[] { tomorrow.Month, tomorrow.Day };
+            var tomorrowAsInt = tmd[0] * 100 + tmd[1];
             var t4larr = new string[] { "春分", "夏至", "秋分", "冬至" };
             var t4jarr = new string[] { "立春", "立夏", "立秋", "立冬" };
             var t4l = new DataList();
@@ -988,7 +1005,7 @@ namespace Sonic853.Udon.CnLunar
                 // 使用八字月柱与八字日柱算神煞（辨方书配图和部分文字）
                 men = monthEarthNum;
             }
-            var day8CharThings = Config.Day8CharThing();
+            var day8CharThings = config.Day8CharThing;
             // item参数规则，（name,当日判断结果,判断规则,宜事,忌事）
             var day8CharThingKeys = day8CharThings.GetKeys();
             for (int i = 0; i < day8CharThingKeys.Count; i++)
@@ -1008,34 +1025,33 @@ namespace Sonic853.Udon.CnLunar
             // 雨水后立夏前执日、危日、收日 宜 取鱼
             // if self.nextSolarNum in range(4, 9) and o in ['执', '危', '收']:
             var thingFishStrings = Config.ThingFishStrings();
-            if (nextSolarNum >= 4 && nextSolarNum < 9 && thingFishStrings.Contains(o))
+            // if (nextSolarNum >= 4 && nextSolarNum < 9 && thingFishStrings.Contains(o))
+            if (nextSolarNum >= 4 && nextSolarNum < 9 && Array.IndexOf(thingFishStrings, o) != -1)
             {
-                var dataList = gbDic["goodThing"].DataList;
-                if (!dataList.Contains("取鱼"))
+                if (!gbDic["goodThing"].DataList.Contains("取鱼"))
                     gbDic["goodThing"].DataList.Add("取鱼");
             }
             // 霜降后立春前执日、危日、收日 宜 畋猎
             // if (self.nextSolarNum in range(20, 24) or self.nextSolarNum in range(0, 3)) and o in ['执', '危', '收']:
-            if ((nextSolarNum >= 20 && nextSolarNum < 24 || nextSolarNum >= 0 && nextSolarNum < 3) && thingFishStrings.Contains(o))
+            // if (((nextSolarNum >= 20 && nextSolarNum < 24) || (nextSolarNum >= 0 && nextSolarNum < 3)) && thingFishStrings.Contains(o))
+            if (((nextSolarNum >= 20 && nextSolarNum < 24) || (nextSolarNum >= 0 && nextSolarNum < 3)) && Array.IndexOf(thingFishStrings, o) != -1)
             {
-                var dataList = gbDic["goodThing"].DataList;
-                if (!dataList.Contains("畋猎"))
+                if (!gbDic["goodThing"].DataList.Contains("畋猎"))
                     gbDic["goodThing"].DataList.Add("畋猎");
             }
             // 立冬后立春前危日 午日 申日 宜 伐木
             // if (self.nextSolarNum in range(21, 24) or self.nextSolarNum in range(0, 3)) and (o in ['危'] or d in ['午', '申']):
-            if ((nextSolarNum >= 21 && nextSolarNum < 24 || nextSolarNum >= 0 && nextSolarNum < 3) && (o == "危" || d == "午" || d == "申"))
+            if (((nextSolarNum >= 21 && nextSolarNum < 24) || (nextSolarNum >= 0 && nextSolarNum < 3)) && (o == "危" || d == "午" || d == "申"))
             {
-                var dataList = gbDic["goodThing"].DataList;
-                if (!dataList.Contains("伐木"))
+                if (!gbDic["goodThing"].DataList.Contains("伐木"))
                     gbDic["goodThing"].DataList.Add("伐木");
             }
             // 每月一日 六日 十五 十九日 二十一日 二十三日 忌 整手足甲
             var days = new int[] { 1, 6, 15, 19, 21, 23 };
-            if (days.Contains(ldn))
+            // if (days.Contains(ldn))
+            if (Array.IndexOf(days, ldn) != -1)
             {
-                var dataList = gbDic["badThing"].DataList;
-                if (!dataList.Contains("整手足甲"))
+                if (!gbDic["badThing"].DataList.Contains("整手足甲"))
                     gbDic["badThing"].DataList.Add("整手足甲");
             }
             // 每月十二日 十五日 忌 整容剃头
@@ -1050,12 +1066,686 @@ namespace Sonic853.Udon.CnLunar
             // 每月十五日 朔弦望月 忌 求医疗病
             if (ldn == 15 || !string.IsNullOrEmpty(phaseOfMoon))
             {
-                var dataList = gbDic["badThing"].DataList;
-                if (!dataList.Contains("求医疗病"))
+                if (!gbDic["badThing"].DataList.Contains("求医疗病"))
                     gbDic["badThing"].DataList.Add("求医疗病");
             }
             // 由于正月建寅，men参数使用排序是从子开始，所以对照书籍需要将循环八字列向右移两位，也就是映射正月的是在第三个字
-            var angel = new DataList();
+            var angel = config.Angel(yhn, men, sn, den, dhen, d, s);
+            var demon = config.Demon(den, yen, men, ldn, lmn, sn, nextSolarTermYear, tmd, twys, d, s, date, t4j, t4l);
+
+            GetTodayGoodBadThing(ref gbDic, angel, "goodName");
+            GetTodayGoodBadThing(ref gbDic, demon, "badName");
+
+            var goodNameDataList = gbDic["goodName"].DataList;
+            goodGodNames = new string[goodNameDataList.Count];
+            for (var i = 0; i < goodNameDataList.Count; i++)
+            {
+                goodGodNames[i] = goodNameDataList[i].String;
+            }
+            var badNameDataList = gbDic["badName"].DataList;
+            badGodNames = new string[badNameDataList.Count];
+            for (var i = 0; i < badNameDataList.Count; i++)
+            {
+                badGodNames[i] = badNameDataList[i].String;
+            }
+
+            // 今日凶吉判断
+            var thingLevel = GetTodayThingLevel(
+                config,
+                month8Char,
+                goodGodNames,
+                badGodNames,
+                today12DayOfficer,
+                out todayLevel,
+                out todayLevelName,
+                out thingLevelName,
+                out isDe
+            );
+
+            // 0:'从宜不从忌',1:'从宜亦从忌',2:'从忌不从宜',3:'诸事皆忌'
+            switch (thingLevel)
+            {
+                case 0:
+                    // 从宜不从忌
+                    GoodOppressBad(ref gbDic);
+                    break;
+                case 1:
+                    // 从宜亦从忌
+                    BadDrewGood(ref gbDic);
+                    break;
+                case 2:
+                    // 从忌不从宜
+                    BadOppressGood(ref gbDic);
+                    break;
+                case 3:
+                    // 诸事皆忌
+                    NothingGood(ref gbDic);
+                    break;
+            }
+
+            var goodThingDataList = gbDic["goodThing"].DataList.DeepClone();
+            var badThingDataList = gbDic["badThing"].DataList.DeepClone();
+
+            // 遇德犹忌之事
+            var deIsBadThingDic = new DataDictionary();
+            // for i in angel[:6]:
+            var angelKeys = angel.GetKeys();
+            for (var i = 0; i < 6; i++)
+            {
+                var key = angelKeys[i].String;
+                var angelItem = angel[key].DataList;
+                var angelItemFirst = key;
+                if (!deIsBadThingDic.ContainsKey(angelItemFirst))
+                {
+                    deIsBadThingDic.Add(angelItemFirst, angelItem[3]);
+                }
+            }
+            var deIsBadThingDataList = new DataList();
+            if (isDe)
+            {
+                foreach (var goodGodName in goodGodNames)
+                {
+                    if (deIsBadThingDic.ContainsKey(goodGodName))
+                    {
+                        var goodGodNameDataList = deIsBadThingDic[goodGodName].DataList;
+                        var goodGodNameDataListCount = goodGodNameDataList.Count;
+                        for (var i = 0; i < goodGodNameDataListCount; i++)
+                        {
+                            var item = goodGodNameDataList[i].String;
+                            if (!deIsBadThingDataList.Contains(item))
+                                deIsBadThingDataList.Add(item);
+                        }
+                    }
+                }
+            }
+            var deIsBadThing = new string[deIsBadThingDataList.Count];
+            for (var i = 0; i < deIsBadThingDataList.Count; i++)
+            {
+                deIsBadThing[i] = deIsBadThingDataList[i].String;
+            }
+
+            if (thingLevel != 3)
+            {
+                // 凡宜宣政事，布政事之日，只注宜宣政事。
+                if (
+                    goodThingDataList.Contains("宣政事")
+                    && goodThingDataList.Contains("布政事")
+                )
+                {
+                    goodThingDataList.RemoveAll("布政事");
+                }
+                // 凡宜营建宫室、修宫室之日，只注宜营建宫室。
+                if (
+                    goodThingDataList.Contains("营建宫室")
+                    && goodThingDataList.Contains("修宫室")
+                )
+                {
+                    goodThingDataList.RemoveAll("修宫室");
+                }
+                // 凡德合、赦愿、月恩、四相、时德等日，不注忌进人口、安床、经络、酝酿、开市、立券、交易、纳财、开仓库、出货财。如遇德犹忌，及从忌不从宜之日，则仍注忌。
+                var isDeSheEnSixiang = false;
+                var deStrings = new string[] { "岁德合", "月德合", "天德合", "天赦", "天愿", "月恩", "四相", "时德" };
+                foreach (var goodGodName in goodGodNames)
+                {
+                    // if (deStrings.Contains(goodGodName))
+                    if (Array.IndexOf(deStrings, goodGodName) != -1)
+                    {
+                        isDeSheEnSixiang = true;
+                        break;
+                    }
+                }
+                // 以上判断 凡德合、赦愿、月恩、四相、时德等日，isDeSheEnSixiang = True
+                if (isDeSheEnSixiang && thingLevel != 2)
+                {
+                    // 不注忌 但条件是 非 从忌不从宜之日，所以 thingLevel != 2
+                    var removeStrings = new string[] { "进人口", "安床", "经络", "酝酿", "开市", "立券交易", "纳财", "开仓库", "出货财" };
+                    foreach (var removeString in removeStrings)
+                        badThingDataList.RemoveAll(removeString);
+                    foreach (var item in deIsBadThing)
+                    {
+                        if (!badThingDataList.Contains(item))
+                            badThingDataList.Add(item);
+                    }
+                }
+
+                // 凡天狗寅日忌祭祀，不注宜求福、祈嗣。
+                if (
+                    // badGodNames.Contains("天狗")
+                    Array.IndexOf(badGodNames, "天狗") != -1
+                    || d.Contains("寅")
+                )
+                {
+                    if (!badThingDataList.Contains("祭祀"))
+                        badThingDataList.Add("祭祀");
+                    var removeStrings = new string[] { "祭祀", "求福", "祈嗣" };
+                    foreach (var removeString in removeStrings)
+                        goodThingDataList.RemoveAll(removeString);
+                }
+                // 凡卯日忌穿井，不注宜开渠。壬日忌开渠，不注宜穿井。
+                if (d.Contains("卯"))
+                {
+                    if (!badThingDataList.Contains("穿井"))
+                        badThingDataList.Add("穿井");
+                    var removeStrings = new string[] { "穿井", "开渠" };
+                    foreach (var removeString in removeStrings)
+                        goodThingDataList.RemoveAll(removeString);
+                }
+                if (d.Contains("壬"))
+                {
+                    if (!badThingDataList.Contains("开渠"))
+                        badThingDataList.Add("开渠");
+                    var removeStrings = new string[] { "开渠", "穿井" };
+                    foreach (var removeString in removeStrings)
+                        goodThingDataList.RemoveAll(removeString);
+                }
+                // 凡巳日忌出行，不注宜出师、遣使。
+                if (d.Contains("巳"))
+                {
+                    if (!badThingDataList.Contains("出行"))
+                        badThingDataList.Add("出行");
+                    var removeStrings = new string[] { "出行", "出师", "遣使" };
+                    foreach (var removeString in removeStrings)
+                        goodThingDataList.RemoveAll(removeString);
+                }
+                // 凡酉日忌宴会，亦不注宜庆赐、赏贺。
+                if (d.Contains("酉"))
+                {
+                    if (!badThingDataList.Contains("宴会"))
+                        badThingDataList.Add("宴会");
+                    var removeStrings = new string[] { "宴会", "庆赐", "赏贺" };
+                    foreach (var removeString in removeStrings)
+                        goodThingDataList.RemoveAll(removeString);
+                }
+                // 凡丁日忌剃头，亦不注宜整容。
+                if (d.Contains("丁"))
+                {
+                    if (!badThingDataList.Contains("剃头"))
+                        badThingDataList.Add("剃头");
+                    var removeStrings = new string[] { "剃头", "整容" };
+                    foreach (var removeString in removeStrings)
+                        goodThingDataList.RemoveAll(removeString);
+                }
+                // 凡吉足胜凶，从宜不从忌者，如遇德犹忌之事，则仍注忌。
+                if (todayLevel == 1 || (todayLevel == 0 && thingLevel == 0))
+                {
+                    foreach (var item in deIsBadThing)
+                    {
+                        if (!badThingDataList.Contains(item))
+                            badThingDataList.Add(item);
+                    }
+                }
+                // 凡吉凶相抵，不注宜亦不注忌者，如遇德犹忌之事，则仍注忌。
+                if (todayLevel == 1)
+                {
+                    // 凡吉凶相抵，不注忌祈福，亦不注忌求嗣。
+                    if (!badThingDataList.Contains("祈福"))
+                        badThingDataList.RemoveAll("求嗣");
+                    // 凡吉凶相抵，不注忌结婚姻，亦不注忌冠带、纳采问名、嫁娶、进人口，如遇德犹忌之日则仍注忌。
+                    if (
+                        !badThingDataList.Contains("结婚姻")
+                        && !isDe
+                    )
+                    {
+                        var removeStrings = new string[] { "冠带", "纳采问名", "嫁娶", "进人口" };
+                        foreach (var removeString in removeStrings)
+                            badThingDataList.RemoveAll(removeString);
+                    }
+                    // 凡吉凶相抵，不注忌嫁娶，亦不注忌冠带、结婚姻、纳采问名、进人口、搬移、安床，如遇德犹忌之日，则仍注忌。
+                    if (
+                        !badThingDataList.Contains("嫁娶")
+                        && !isDe
+                    )
+                    {
+                        // 遇不将而不注忌嫁娶者，亦仍注忌。
+                        // if (!goodGodNames.Contains("不将"))
+                        if (Array.IndexOf(goodGodNames, "不将") == -1)
+                        {
+                            var removeStrings = new string[] { "冠带", "纳采问名", "结婚姻", "进人口", "搬移", "安床" };
+                            foreach (var removeString in removeStrings)
+                                badThingDataList.RemoveAll(removeString);
+                        }
+                    }
+                }
+                // 遇亥日，厌对、八专、四忌、四穷而仍注忌嫁娶者，只注所忌之事，其不忌者仍不注忌。
+                if (d.Contains("亥"))
+                {
+                    var bads = new string[] { "厌对", "八专", "四忌", "四穷" };
+                    foreach (var bad in bads)
+                    {
+                        var godItem = demon[bad].DataList;
+                        if (
+                            IfGodItem(godItem[0], godItem[1])
+                            && !badThingDataList.Contains("嫁娶")
+                        )
+                        {
+                            badThingDataList.Add("嫁娶");
+                        }
+                    }
+                }
+                // 凡吉凶相抵，不注忌搬移，亦不注忌安床。不注忌安床，亦不注忌搬移。如遇德犹忌之日，则仍注忌。
+                if (todayLevel == 1 && !isDe)
+                {
+                    if (!badThingDataList.Contains("搬移"))
+                        badThingDataList.RemoveAll("安床");
+                    if (!badThingDataList.Contains("安床"))
+                        badThingDataList.RemoveAll("搬移");
+                    // 凡吉凶相抵，不注忌解除，亦不注忌整容、剃头、整手足甲。如遇德犹忌之日，则仍注忌。
+                    if (!badThingDataList.Contains("解除"))
+                    {
+                        var removeStrings = new string[] { "整容", "剃头", "整手足甲" };
+                        foreach (var removeString in removeStrings)
+                            badThingDataList.RemoveAll(removeString);
+                    }
+                    // 凡吉凶相抵，不注忌修造动土、竖柱上梁，亦不注忌修宫室、缮城郭、筑提防、修仓库、鼓铸、苫盖、修置产室、开渠穿井、安碓硙、补垣塞穴、修饰垣墙、平治道涂、破屋坏垣。如遇德犹忌之日，则仍注忌。
+                    if (
+                        !badThingDataList.Contains("修造")
+                        || !badThingDataList.Contains("竖柱上梁")
+                    )
+                    {
+                        var removeStrings = new string[] {
+                            "修宫室", "缮城郭", "整手足甲", "筑提", "修仓库", "鼓铸", "苫盖", "修置产室", "开渠穿井",
+                            "安碓硙", "补垣塞穴", "修饰垣墙", "平治道涂", "破屋坏垣"
+                        };
+                        foreach (var removeString in removeStrings)
+                            badThingDataList.RemoveAll(removeString);
+                    }
+                }
+                // 凡吉凶相抵，不注忌开市，亦不注忌立券交易、纳财。不注忌纳财，亦不注忌开市、立券交易。不注忌立券交易，亦不注忌开市、纳财。
+                // 凡吉凶相抵，不注忌开市、立券交易，亦不注忌开仓库、出货财。
+                if (todayLevel == 1)
+                {
+                    if (!badThingDataList.Contains("开市"))
+                    {
+                        var removeStrings = new string[] { "立券交易", "纳财", "开仓库", "出货财" };
+                        foreach (var removeString in removeStrings)
+                            badThingDataList.RemoveAll(removeString);
+                    }
+                    if (!badThingDataList.Contains("纳财"))
+                    {
+                        var removeStrings = new string[] { "立券交易", "开市" };
+                        foreach (var removeString in removeStrings)
+                            badThingDataList.RemoveAll(removeString);
+                    }
+                    if (!badThingDataList.Contains("立券交易"))
+                    {
+                        var removeStrings = new string[] { "纳财", "开市", "开仓库", "出货财" };
+                        foreach (var removeString in removeStrings)
+                            badThingDataList.RemoveAll(removeString);
+                    }
+                }
+                // 如遇专忌之日，则仍注忌。【需要询问原作者以取得进一步解释并对此做出优化】
+                // 凡吉凶相抵，不注忌牧养，亦不注忌纳畜。不注忌纳畜，亦不注忌牧养。
+                if (todayLevel == 1)
+                {
+                    if (!badThingDataList.Contains("牧养"))
+                        badThingDataList.RemoveAll("纳畜");
+                    if (!badThingDataList.Contains("纳畜"))
+                        badThingDataList.RemoveAll("牧养");
+                    // 凡吉凶相抵，有宜安葬不注忌启攒，有宜启攒不注忌安葬。
+                    if (!goodThingDataList.Contains("安葬"))
+                        badThingDataList.RemoveAll("启攒");
+                    if (!goodThingDataList.Contains("启攒"))
+                        badThingDataList.RemoveAll("安葬");
+                }
+                // 凡忌诏命公卿、招贤，不注宜施恩、封拜、举正直、袭爵受封。    #本版本无 封拜 袭爵受封
+                if (badThingDataList.Contains("诏命公卿") || badThingDataList.Contains("招贤"))
+                {
+                    var removeStrings = new string[] { "施恩", "举正直" };
+                    foreach (var removeString in removeStrings)
+                        goodThingDataList.RemoveAll(removeString);
+                }
+                // 凡忌施恩、封拜、举正直、袭爵受封，亦不注宜诏命公卿、招贤。
+                if (badThingDataList.Contains("施恩") || badThingDataList.Contains("举正直"))
+                {
+                    var removeStrings = new string[] { "诏命公卿", "招贤" };
+                    foreach (var removeString in removeStrings)
+                        goodThingDataList.RemoveAll(removeString);
+                }
+                // 凡宜宣政事之日遇往亡则改宣为布。
+                // if (goodThingDataList.Contains("宣政事") && badGodNames.Contains("往亡"))
+                if (goodThingDataList.Contains("宣政事") && Array.IndexOf(badGodNames, "往亡") != -1)
+                {
+                    goodThingDataList.RemoveAll("宣政事");
+                    goodThingDataList.Add("布政事");
+                }
+                // 凡月厌忌行幸、上官，不注宜颁诏、施恩封拜、诏命公卿、招贤、举正直。遇宜宣政事之日，则改宣为布。
+                // if (badGodNames.Contains("月厌"))
+                if (Array.IndexOf(badGodNames, "月厌") != -1)
+                {
+                    var removeStrings = new string[] { "颁诏", "施恩", "招贤", "举正直" };
+                    foreach (var removeString in removeStrings)
+                        goodThingDataList.RemoveAll(removeString);
+                    if (goodThingDataList.Contains("宣政事"))
+                    {
+                        goodThingDataList.RemoveAll("宣政事");
+                        goodThingDataList.Add("布政事");
+                    }
+                    // 凡土府、土符、地囊，只注忌补垣，亦不注宜塞穴。
+                    var badStrings = new string[] { "土府", "土符", "地囊" };
+                    foreach (var badString in badStrings)
+                    {
+                        // if (badGodNames.Contains(badString))
+                        if (Array.IndexOf(badGodNames, badString) != -1)
+                        {
+                            if (!badThingDataList.Contains("补垣"))
+                                badThingDataList.Add("补垣");
+                            goodThingDataList.RemoveAll("塞穴");
+                            break;
+                        }
+                    }
+                }
+                // 凡开日，不注宜破土、安葬、启攒，亦不注忌。遇忌则注。
+                if (today12DayOfficer.Contains("开"))
+                {
+                    var removeStrings = new string[] { "破土", "安葬", "启攒" };
+                    foreach (var removeString in removeStrings)
+                        goodThingDataList.RemoveAll(removeString);
+                }
+                // 凡四忌、四穷只忌安葬。如遇鸣吠、鸣吠对亦不注宜破土、启攒。
+                // if (badGodNames.Contains("四忌") || badGodNames.Contains("四穷"))
+                if (Array.IndexOf(badGodNames, "四忌") != -1 || Array.IndexOf(badGodNames, "四穷") != -1)
+                {
+                    if (!badThingDataList.Contains("安葬"))
+                        badThingDataList.Add("安葬");
+                    var removeStrings = new string[] { "破土", "启攒" };
+                    foreach (var removeString in removeStrings)
+                        goodThingDataList.RemoveAll(removeString);
+                }
+                // if (goodGodNames.Contains("鸣吠") || goodGodNames.Contains("鸣吠对"))
+                if (Array.IndexOf(goodGodNames, "鸣吠") != -1 || Array.IndexOf(goodGodNames, "鸣吠对") != -1)
+                {
+                    var removeStrings = new string[] { "破土", "启攒" };
+                    foreach (var removeString in removeStrings)
+                        goodThingDataList.RemoveAll(removeString);
+                }
+                // 凡天吏、大时不以死败论者，遇四废、岁薄、逐阵仍以死败论。
+                // 凡岁薄、逐阵日所宜事，照月厌所忌删，所忌仍从本日。
+                // 二月甲戌、四月丙申、六月甲子、七月戊申、八月庚辰、九月辛卯、十月甲子、十二月甲子，德和与赦、愿所汇之辰，诸事不忌。
+                if (d.Contains(new string[] { "空", "甲戌", "空", "丙申", "空", "甲子", "戊申", "庚辰", "辛卯", "甲子", "空", "甲子" }[lmn - 1]))
+                {
+                    badThingDataList.Clear();
+                    badThingDataList.Add("诸事不忌");
+                }
+                // if len(set(self.goodGodName).intersection(set(['岁德合', '月德合', '天德合']))) and len(set(self.goodGodName).intersection(set(['天赦', '天愿']))):
+                // if (goodGodNames.Intersect(new string[] { "岁德合", "月德合", "天德合" }).Count() > 0 && goodGodNames.Intersect(new string[] { "天赦", "天愿" }).Count() > 0)
+                var deheStrings = new string[] { "岁德合", "月德合", "天德合" };
+                var deheStringFound = false;
+                var tianStrings = new string[] { "天赦", "天愿" };
+                var tianStringFound = false;
+                foreach (var deheString in deheStrings)
+                {
+                    if (Array.IndexOf(goodGodNames, deheString) != -1)
+                    {
+                        deheStringFound = true;
+                        break;
+                    }
+                }
+                foreach (var tianString in tianStrings)
+                {
+                    if (Array.IndexOf(goodGodNames, tianString) != -1)
+                    {
+                        tianStringFound = true;
+                        break;
+                    }
+                }
+                if (deheStringFound && tianStringFound)
+                {
+                    badThingDataList.Clear();
+                    badThingDataList.Add("诸事不忌");
+                }
+                // 书中未明注忌不注宜
+            }
+            var rmThings = new DataList();
+            for (var i = 0; i < badThingDataList.Count; i++)
+            {
+                var item = badThingDataList[i].String;
+                if (goodThingDataList.Contains(item))
+                    rmThings.Add(item);
+            }
+            if (rmThings.Count > 0 && !rmThings[0].String.Contains("诸事"))
+            {
+                for (var i = 0; i < rmThings.Count; i++)
+                    goodThingDataList.RemoveAll(rmThings[i].String);
+            }
+
+            // 为空清理
+            if (badThingDataList.Count == 0)
+                badThingDataList.Add("诸事不忌");
+            if (goodThingDataList.Count == 0)
+                goodThingDataList.Add("诸事不宜");
+
+            goodThings = new string[goodThingDataList.Count];
+            for (var i = 0; i < goodThingDataList.Count; i++)
+            {
+                goodThings[i] = goodThingDataList[i].String;
+            }
+
+            badThings = new string[badThingDataList.Count];
+            for (var i = 0; i < badThingDataList.Count; i++)
+            {
+                badThings[i] = badThingDataList[i].String;
+            }
+            // 输出排序调整
+            Array.Sort((Array)goodThings);
+            Array.Sort((Array)badThings);
+        }
+        /// <summary>
+        /// 配合angel、demon的数据结构的吉神凶神筛选
+        /// </summary>
+        /// <param name="dic"></param>
+        /// <param name="godDb"></param>
+        /// <param name="nameKey"></param>
+        /// <returns></returns>
+        static DataDictionary GetTodayGoodBadThing(ref DataDictionary dic, DataDictionary godDb, string nameKey)
+        {
+            var godDbKeys = godDb.GetKeys();
+            for (var i = 0; i < godDbKeys.Count; i++)
+            {
+                var godItem0 = godDbKeys[i].String;
+                var godItem = godDb[godItem0].DataList;
+                var godItem1T = godItem[0];
+                var godItem2T = godItem[1];
+                var godItem3 = godItem[2].DataList;
+                var godItem4 = godItem[3].DataList;
+                // Debug.Log($"godItem0:{godItem0} godItem1T:{godItem1T} godItem2T:{godItem2T} godItem3:{godItem3} godItem4:{godItem4}");
+                if (IfGodItem(godItem1T, godItem2T))
+                    AddGoodBadThing(ref dic, nameKey, godItem0, godItem3, godItem4);
+            }
+            return dic;
+        }
+        static bool IfGodItem(DataToken godItem1T, DataToken godItem2T)
+        {
+            if (godItem1T.TokenType == TokenType.String && godItem2T.TokenType == TokenType.String)
+            {
+
+                var godItem1 = godItem1T.String;
+                var godItem2 = godItem2T.String;
+                if (godItem2.Contains(godItem1))
+                    return true;
+            }
+            else if (godItem1T.TokenType == TokenType.Boolean)
+            {
+                return godItem1T.Boolean;
+            }
+            else if (godItem1T.TokenType == TokenType.Int)
+            {
+                var godItem1 = godItem1T.Int;
+                var godItem2 = godItem2T.DataList;
+                if (godItem2.Contains(godItem1))
+                    return true;
+            }
+            else if (godItem1T.TokenType == TokenType.DataList)
+            {
+                var godItem1 = godItem1T.DataList;
+                var godItem2 = godItem2T.DataList;
+                var godItem2Count = godItem2.Count;
+                var godItem1First = godItem1[0].Int;
+                var godItem1Second = godItem1[1];
+                var item1IsString = godItem1Second.TokenType == TokenType.String;
+                // Debug.Log($"godItem1First:{godItem1First} godItem1Second:{godItem1Second} item1IsString:{item1IsString}");
+                for (var j = 0; j < godItem2Count; j++)
+                {
+                    var godItem2Item = godItem2[j].DataList;
+                    if (godItem2Item.Count != 2) { continue; }
+                    var godItem2ItemFirst = godItem2Item[0].Int;
+                    if (godItem1First != godItem2ItemFirst) { continue; }
+                    var godItem2ItemSecond = godItem2Item[1];
+                    if (item1IsString && godItem1Second.String == godItem2ItemSecond.String)
+                        return true;
+                    else if (godItem1Second.TokenType == TokenType.Int
+                    && godItem1Second.Int == godItem2ItemSecond.Int)
+                        return true;
+                }
+            }
+            // switch (true)
+            // {
+            //     case true
+            //     when godItem1T.TokenType == TokenType.String
+            //     && godItem2T.TokenType == TokenType.String:
+            //         {
+            //             var godItem1 = godItem1T.String;
+            //             var godItem2 = godItem2T.String;
+            //             if (godItem2.Contains(godItem1))
+            //                 return true;
+            //         }
+            //         break;
+            //     case true
+            //     when godItem1T.TokenType == TokenType.Boolean:
+            //         // && godItem2T.TokenType == TokenType.Boolean:
+            //         {
+            //             var godItem1 = godItem1T.Boolean;
+            //             if (godItem1)
+            //                 return true;
+            //         }
+            //         break;
+            //     case true
+            //     when godItem1T.TokenType == TokenType.Int:
+            //         // && godItem2T.TokenType == TokenType.DataList:
+            //         {
+            //             var godItem1 = godItem1T.Int;
+            //             var godItem2 = godItem2T.DataList;
+            //             if (godItem2.Contains(godItem1))
+            //                 return true;
+            //         }
+            //         break;
+            //     case true
+            //     when godItem1T.TokenType == TokenType.DataList:
+            //         // && godItem2T.TokenType == TokenType.DataList:
+            //         {
+            //             var godItem1 = godItem1T.DataList;
+            //             var godItem2 = godItem2T.DataList;
+            //             var godItem1First = godItem1[0].Int;
+            //             var godItem1Second = godItem1[1];
+            //             var item1IsString = godItem1Second.TokenType == TokenType.String;
+            //             for (var j = 0; j < godItem2.Count; j++)
+            //             {
+            //                 var godItem2Item = godItem2[j].DataList;
+            //                 var godItem2ItemFirst = godItem2Item[0].Int;
+            //                 if (godItem1First != godItem2ItemFirst) { continue; }
+            //                 var godItem2ItemSecond = godItem2Item[1];
+            //                 if (item1IsString && godItem1Second.String == godItem2ItemSecond.String)
+            //                     return true;
+            //                 else if (godItem1Second.TokenType == TokenType.Int
+            //                 && godItem1Second.Int == godItem2ItemSecond.Int)
+            //                     return true;
+            //             }
+            //         }
+            //         break;
+            // }
+            return false;
+        }
+        static DataDictionary AddGoodBadThing(ref DataDictionary dic, string nameKey, string godItem0, DataList godItem3, DataList godItem4)
+        {
+            var goodThingKey = "goodThing";
+            var badThingKey = "badThing";
+            if (!dic[nameKey].DataList.Contains(godItem0))
+                dic[nameKey].DataList.Add(godItem0);
+
+            for (var j = 0; j < godItem3.Count; j++)
+            {
+                var item = godItem3[j].String;
+                if (!dic[goodThingKey].DataList.Contains(item))
+                    dic[goodThingKey].DataList.Add(item);
+            }
+            for (var j = 0; j < godItem4.Count; j++)
+            {
+                var item = godItem4[j].String;
+                if (!dic[badThingKey].DataList.Contains(item))
+                    dic[badThingKey].DataList.Add(item);
+            }
+            return dic;
+        }
+        /// <summary>
+        /// 第一方案：《钦定协纪辨方书》古书影印版，宜忌等第表<br />
+        /// 凡铺注《万年历》、《通书》，先依用事次第察其所宜忌之日，于某日下注宜某事，某日下注忌某事，次按宜忌，较量其凶吉之轻重，以定去取。<br />
+        /// 从忌亦从宜
+        /// </summary>
+        /// <param name="dic"></param>
+        /// <returns></returns>
+        static DataDictionary BadDrewGood(ref DataDictionary dic)
+        {
+            // for removeThing in list(set(dic['goodThing']).intersection(set(dic['badThing']))):
+            var goodThings = dic["goodThing"].DataList.DeepClone();
+            for (var i = 0; i < goodThings.Count; i++)
+            {
+                var goodThingString = goodThings[i].String;
+                if (dic["badThing"].DataList.Contains(goodThingString))
+                {
+                    dic["badThing"].DataList.RemoveAll(goodThingString);
+                    dic["goodThing"].DataList.RemoveAll(goodThingString);
+                }
+            }
+            return dic;
+        }
+
+        /// <summary>
+        /// 从忌不从宜
+        /// </summary>
+        /// <param name="dic"></param>
+        /// <returns></returns>
+        static DataDictionary BadOppressGood(ref DataDictionary dic)
+        {
+            var goodThings = dic["goodThing"].DataList.DeepClone();
+            for (var i = 0; i < goodThings.Count; i++)
+            {
+                var goodThingString = goodThings[i].String;
+                if (!dic["badThing"].DataList.Contains(goodThingString))
+                {
+                    dic["goodThing"].DataList.RemoveAll(goodThingString);
+                }
+            }
+            return dic;
+        }
+        /// <summary>
+        /// 从宜不从忌
+        /// </summary>
+        /// <param name="dic"></param>
+        /// <returns></returns>
+        static DataDictionary GoodOppressBad(ref DataDictionary dic)
+        {
+            var badThings = dic["badThing"].DataList.DeepClone();
+            for (var i = 0; i < badThings.Count; i++)
+            {
+                var badThingString = badThings[i].String;
+                if (!dic["goodThing"].DataList.Contains(badThingString))
+                {
+                    dic["badThing"].DataList.RemoveAll(badThingString);
+                }
+            }
+            return dic;
+        }
+        /// <summary>
+        /// 诸事不宜
+        /// </summary>
+        /// <param name="dic"></param>
+        /// <returns></returns>
+        static DataDictionary NothingGood(ref DataDictionary dic)
+        {
+            dic["goodThing"].DataList.Clear();
+            dic["goodThing"].DataList.Add("诸事不宜");
+            dic["badThing"].DataList.Clear();
+            dic["badThing"].DataList.Add("诸事不宜");
+            return dic;
         }
     }
 }

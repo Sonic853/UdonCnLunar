@@ -9,12 +9,22 @@ namespace Sonic853.Udon.CnLunar
 {
     public class Holidays : UdonSharpBehaviour
     {
-        public static DataDictionary LegalsolarTermsHolidayDic() => new DataDictionary() {
+        public static Holidays Instance()
+        {
+            var obj = GameObject.Find("Sonic853.CnLunar.Holidays");
+            if (obj == null)
+            {
+                Debug.LogError("GameManager not found");
+                return null;
+            }
+            return (Holidays)obj.GetComponent(typeof(UdonBehaviour));
+        }
+        public DataDictionary LegalsolarTermsHolidayDic = new DataDictionary() {
             {
                 "清明", "清明节"
             },
         };
-        public static DataDictionary LegalHolidaysDic() => new DataDictionary() {
+        public DataDictionary LegalHolidaysDic = new DataDictionary() {
             {
                 "1,1", "元旦节"
             },
@@ -25,7 +35,7 @@ namespace Sonic853.Udon.CnLunar
                 "10,1", "国庆节"
             },
         };
-        public static DataDictionary LegalLunarHolidaysDic() => new DataDictionary() {
+        public DataDictionary LegalLunarHolidaysDic = new DataDictionary() {
             {
                 "1,1", "春节"
             },
@@ -42,7 +52,7 @@ namespace Sonic853.Udon.CnLunar
                 "12,30", "除夕"
             },
         };
-        public static DataList OtherHolidaysList() => new DataList() {
+        public DataList OtherHolidaysList = new DataList() {
             new DataDictionary() {
                 { 8, "周恩来逝世纪念日" },
                 { 10, "中国公安110宣传日" },
@@ -144,7 +154,7 @@ namespace Sonic853.Udon.CnLunar
             }, // 12月
         };
         // 复活节:每年春分后月圆第一个星期天  母亲节:每年5月份的第2个星期日  父亲节:每年6月份的第3个星期天感恩节 每年11月最后一个星期四
-        public static DataDictionary OtherEastHolidaysList() => new DataDictionary() {
+        public DataDictionary OtherEastHolidaysList = new DataDictionary() {
             {
                 "5,2,7", "母亲节"
             },
@@ -152,7 +162,7 @@ namespace Sonic853.Udon.CnLunar
                 "6,3,7", "父亲节"
             },
         };
-        public static DataList OtherLunarHolidaysList() => new DataList() {
+        public DataList OtherLunarHolidaysList = new DataList() {
             new DataDictionary() {
                 {1, "弥勒佛圣诞"},
                 {8, "五殿阎罗天子诞"},

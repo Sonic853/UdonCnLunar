@@ -2,6 +2,8 @@
 
 在 VRChat 拥有自己的农历。
 
+目前只拥有最基础的功能实现（也就只是完成了 Init 会用到的方法）目前较强依赖 VRChat 相关的独有功能，如需脱离 VRChat 运行的话需要进一步修改以及优化。
+
 ## License restrictions 许可限制
 Individuals or companies in Chinese Mainland (except Hong Kong China, Macau China, and Taiwan Province of China) are prohibited from using this GPL license and using this repository and products if the following circumstances apply:
 
