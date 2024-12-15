@@ -342,6 +342,10 @@ namespace Sonic853.Udon.CnLunar.Extensions
             lunar.lunarDay,
             lunar.todaySolarTerms
         );
+        public static string[] GetOtherHolidays(this Lunar lunar) => Lunar.GetOtherHolidays(
+            lunar.holidays,
+            lunar.date
+        );
         /// <summary>
         /// 建除十二神，《淮南子》曰：正月建寅，则寅为建，卯为除，辰为满，巳为平，主生；午为定，未为执，主陷；申为破，主衡；酉为危，主杓；戍为成，主小德；亥为收，主大备；子为开，主太阳；丑为闭，主太阴。
         /// </summary>

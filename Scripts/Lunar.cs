@@ -21,6 +21,7 @@ namespace Sonic853.Udon.CnLunar
     {
         public Config config;
         public Holidays holidays;
+        public string dateString = "";
         public DateTime date = DateTime.Now;
         public string godType = "8char";
         public string year8Char = "year";
@@ -71,7 +72,7 @@ namespace Sonic853.Udon.CnLunar
         public string starZodiac = "";
         public string todayEastZodiac = "";
         public string today28Star = "";
-        public DataDictionary thisYearSolarTermsDic = new DataDictionary();
+        [NonSerialized] public DataDictionary thisYearSolarTermsDic = new DataDictionary();
         public string meridians = "";
         public string[] goodGodNames;
         public string[] badGodNames;
@@ -83,7 +84,9 @@ namespace Sonic853.Udon.CnLunar
         public bool isDe;
         void Start()
         {
-            Init(DateTime.Now);
+            var _date = DateTime.Now;
+            if (!string.IsNullOrEmpty(dateString)) DateTime.TryParse(dateString, out _date);
+            Init(_date);
         }
         public void Init(DateTime _date, string _godType = "8char", string _year8Char = "year")
         {
@@ -101,14 +104,17 @@ namespace Sonic853.Udon.CnLunar
                 out spanDays,
                 out monthDaysList
             );
-            Debug.Log($"year:{lunarYear}, month:{lunarMonth}, day:{lunarDay}, isLunarLeapMonth:{isLunarLeapMonth}, spanDays:{spanDays}");
+            // print('lunarYear=', self.lunarYear, 'lunarMonth=', self.lunarMonth, 'lunarDay=', self.lunarDay)
+            var monthDaysListStr = "";
+            foreach (var monthDay in monthDaysList) monthDaysListStr += monthDay + ",";
+            // Debug.Log($"twohourNum:{twohourNum}, year:{lunarYear}, month:{lunarMonth}, day:{lunarDay}, isLunarLeapMonth:{isLunarLeapMonth}, spanDays:{spanDays}, monthDaysList:{monthDaysListStr}");
             this.GetLunarCn(
                 out lunarYearCn,
                 out lunarMonthCn,
                 out lunarDayCn,
                 out lunarMonthLong
             );
-            Debug.Log($"lunarYearCn:{lunarYearCn}, lunarMonthCn:{lunarMonthCn}, lunarDayCn:{lunarDayCn}, lunarMonthLong:{lunarMonthLong}");
+            // Debug.Log($"lunarYearCn:{lunarYearCn}, lunarMonthCn:{lunarMonthCn}, lunarDayCn:{lunarDayCn}, lunarMonthLong:{lunarMonthLong}");
             phaseOfMoon = this.GetPhaseOfMoon();
             todaySolarTerms = this.GetTodaySolarTerms(
                 out thisYearSolarTermsDateList,
@@ -137,6 +143,7 @@ namespace Sonic853.Udon.CnLunar
                 out monthHeavenNum,
                 out dayHeavenNum
             );
+            // Debug.Log($"year8Char: {year8Char}, month8Char: {month8Char}, day8Char: {day8Char}, dayHeavenlyEarthNum: {dayHeavenlyEarthNum}, yearEarthNum: {yearEarthNum}, monthEarthNum: {monthEarthNum}, dayEarthNum: {dayEarthNum}, yearHeavenNum: {yearHeavenNum}, monthHeavenNum: {monthHeavenNum}, dayHeavenNum: {dayHeavenNum}");
             this.GetSeason(
                 out seasonType,
                 out seasonNum,
@@ -158,6 +165,7 @@ namespace Sonic853.Udon.CnLunar
             );
             weekDayCn = this.GetWeekDayCn();
             starZodiac = this.GetStarZodiac();
+            // Debug.Log($"year8Char:{year8Char}, month8Char:{month8Char}, day8Char:{day8Char}, dayHeavenlyEarthNum:{dayHeavenlyEarthNum}, yearEarthNum:{yearEarthNum}, monthEarthNum:{monthEarthNum}, dayEarthNum:{dayEarthNum}, yearHeavenNum:{yearHeavenNum}, monthHeavenNum:{monthHeavenNum}, dayHeavenNum:{dayHeavenNum}, seasonType:{seasonType}, seasonNum:{seasonNum}, lunarSeason:{lunarSeason}, twohour8Char:{twohour8Char}, dayName:{dayName}, today12DayOfficer:{today12DayOfficer}, today12DayGod:{today12DayGod}, chineseYearZodiac:{chineseYearZodiac}, chineseZodiacClash:{chineseZodiacClash}, starZodiac:{starZodiac}");
             todayEastZodiac = this.GetEastZodiac();
             // self.thisYearSolarTermsDic = dict(zip(SOLAR_TERMS_NAME_LIST, self.thisYearSolarTermsDateList))
             thisYearSolarTermsDic = GetSolarTermsDic(thisYearSolarTermsDateList);
@@ -174,6 +182,12 @@ namespace Sonic853.Udon.CnLunar
                 out badThings
             );
             meridians = this.GetMeridians();
+
+            var legalHolidays = this.GetLegalHolidays();
+            var otherHolidays = this.GetOtherHolidays();
+
+            Debug.Log(string.Join(",", legalHolidays));
+            Debug.Log(string.Join(",", otherHolidays));
         }
         public static int GetBeginningOfSpringX(
             int nextSolarNum,
@@ -345,9 +359,23 @@ namespace Sonic853.Udon.CnLunar
             lunarMonth = 1;
             lunarDay = 1;
             var codeYear = Config.LunarNewYearList()[lunarYear - Config.START_YEAR()];
+
             // 获取当前日期与当年春节的差日
-            var _spanDays = (date - new DateTime(lunarYear, (codeYear >> 5) & 0x3, (codeYear >> 0) & 0x1f)).Days;
+            var _m = (codeYear >> 5) & 0x3;
+            var _d = (codeYear >> 0) & 0x1f;
+            var lunarDate = new DateTime(lunarYear, _m, _d);
+            var _spanDays = (date - lunarDate).Days;
+            // C# 下的日期相减后的负数出现与 python 的负数不一致，故做了些特殊处理
+            if (_spanDays < 0) _spanDays--;
+            else if (_spanDays == 0)
+            {
+                var date1 = date.AddDays(1);
+                var _spanDays1 = (date1 - lunarDate).Days;
+                if (_spanDays == _spanDays1) _spanDays--;
+            }
             spanDays = _spanDays;
+            // print('date=', self.date, 'lunarDate=', lunarDate, 'lunarYear=', self.lunarYear, '_m=', _m, '_d=', _d, '_span_days=', _span_days)
+            // Debug.Log($"date:{date}, lunarDate:{lunarDate}, lunarYear:{lunarYear}, _m:{_m}, _d:{_d}, _spanDays:{_spanDays}");
             isLunarLeapMonth = false;
             // var _ = 0;
             if (_spanDays >= 0)
@@ -432,7 +460,7 @@ namespace Sonic853.Udon.CnLunar
             }
             return nextSolarNum % 24;
         }
-        public static int GetIndexInYearSolarTerms(int[] findDate, int[][] solarTermsDateList)
+        static int GetIndexInYearSolarTerms(int[] findDate, int[][] solarTermsDateList)
         {
             var findMonth = findDate[0];
             var findDay = findDate[1];
@@ -497,6 +525,11 @@ namespace Sonic853.Udon.CnLunar
             }
             return thisYearSolarTermsDic;
         }
+        /// <summary>
+        /// 星次
+        /// </summary>
+        /// <param name="nextSolarTerm"></param>
+        /// <returns></returns>
         public static string GetEastZodiac(string nextSolarTerm)
         {
             var NextSolarTermIndex = (Array.IndexOf(Config.SOLAR_TERMS_NAME_LIST(), nextSolarTerm) - 1) % 24;
@@ -536,9 +569,11 @@ namespace Sonic853.Udon.CnLunar
         public static string GetDay8Char(DateTime date, int twohourNum, out int dayHeavenlyEarthNum)
         {
             var date2019 = DateTime.Parse("2019-01-29T00:00:00.000+08:00");
+            // 早于2019的日期需要额外处理
             var apart = date - date2019;
             var the60HeavenlyEarth = Config.The60HeavenlyEarth();
             var baseNum = Array.IndexOf(the60HeavenlyEarth, "丙寅");
+            // 超过23点算第二天，为防止溢出，在baseNum上操作+1
             if (twohourNum == 12)
             {
                 baseNum++;
@@ -707,6 +742,49 @@ namespace Sonic853.Udon.CnLunar
             }
             return _temp;
         }
+        public static string[] GetOtherHolidays(
+            Holidays holidays,
+            DateTime date
+        )
+        {
+            var temp = new DataList();
+            var y = date.Year;
+            var m = date.Month;
+            var d = date.Day;
+            var wn = GetIso8601WeekOfYear(date);
+            Debug.Log($"wn:{wn}");
+            var w = (int)date.DayOfWeek;
+            if (w == 0) w = 7;
+
+            var otherEastHolidaysKeys = holidays.OtherEastHolidaysList.GetKeys();
+            for (var i = 0; i < otherEastHolidaysKeys.Count; i++)
+            {
+                var day = otherEastHolidaysKeys[i].String;
+                // Debug.Log($"day:{day}");
+                if (
+                    !day.StartsWith($"{m}")
+                    || !day.EndsWith($"{w}")
+                ) { continue; }
+                var dayStrArr = day.Split(',');
+                var weekCount = int.Parse(dayStrArr[1]);
+                var t1dwn = GetIso8601WeekOfYear(new DateTime(y, m, 1));
+                // Debug.Log($"t1dwn:{t1dwn}");
+                var d1 = wn - t1dwn + 1;
+                if (weekCount == d1)
+                {
+                    temp.Add(holidays.OtherEastHolidaysList[day].String);
+                }
+            }
+            var tempCount = temp.Count;
+            var _temp = new string[tempCount];
+            for (var i = 0; i < tempCount; i++)
+            {
+                _temp[i] = temp[i].String;
+            }
+            return _temp;
+        }
+        // Todo: get_otherLunarHolidays
+        // Todo: get_pengTaboo 彭祖百忌
         /// <summary>
         /// 建除十二神，《淮南子》曰：正月建寅，则寅为建，卯为除，辰为满，巳为平，主生；午为定，未为执，主陷；申为破，主衡；酉为危，主杓；戍为成，主小德；亥为收，主大备；子为开，主太阳；丑为闭，主太阴。
         /// </summary>
@@ -733,7 +811,10 @@ namespace Sonic853.Udon.CnLunar
             }
             var thisMonthStartGodNum = men % 12;
             var apartNum = dayEarthNum - thisMonthStartGodNum;
+            if (apartNum < 0) apartNum += 12;
+            // Debug.Log($"lunarMonth: {lunarMonth}, monthEarthNum: {monthEarthNum}, dayEarthNum: {dayEarthNum}, thisMonthStartGodNum: {thisMonthStartGodNum}, apartNum: {apartNum}");
             today12DayOfficer = Config.Chinese12DayOfficers()[apartNum % 12].ToString();
+            // Debug.Log($"today12DayOfficer: {today12DayOfficer}");
             // 青龙定位口诀：子午寻申位，丑未戌上亲；寅申居子中，卯酉起于寅；辰戌龙位上，巳亥午中寻。
             // [申戌子寅辰午]
             // 十二神凶吉口诀：道远几时通达，路遥何日还乡
@@ -761,9 +842,16 @@ namespace Sonic853.Udon.CnLunar
         public static string GetThe28Stars(DateTime date)
         {
             var date2019 = DateTime.Parse("2019-01-17T00:00:00.000+08:00");
+            // 早于2019的日期需要额外处理
             var apart = date - date2019;
             return Config.The28StarsList()[apart.Days % 28];
         }
+        // Todo: get_nayin
+        // Todo: get_today5Elements
+        // Todo: get_the9FlyStar
+        // Todo: get_luckyGodsDirection
+        // Todo: get_fetalGod
+        // Todo: get_twohourLuckyList
         public static int GetTwohourNum(DateTime date) => (date.Hour + 1) / 2;
         public static string GetMeridians(int twohourNum) => Config.MeridiansName()[twohourNum % 12];
         /// <summary>
@@ -1034,6 +1122,7 @@ namespace Sonic853.Udon.CnLunar
             // 霜降后立春前执日、危日、收日 宜 畋猎
             // if (self.nextSolarNum in range(20, 24) or self.nextSolarNum in range(0, 3)) and o in ['执', '危', '收']:
             // if (((nextSolarNum >= 20 && nextSolarNum < 24) || (nextSolarNum >= 0 && nextSolarNum < 3)) && thingFishStrings.Contains(o))
+            // Debug.Log($"nextSolarNum: {nextSolarNum}, o: {o}, Array.IndexOf(thingFishStrings, o): {Array.IndexOf(thingFishStrings, o)}");
             if (((nextSolarNum >= 20 && nextSolarNum < 24) || (nextSolarNum >= 0 && nextSolarNum < 3)) && Array.IndexOf(thingFishStrings, o) != -1)
             {
                 if (!gbDic["goodThing"].DataList.Contains("畋猎"))
@@ -1709,7 +1798,7 @@ namespace Sonic853.Udon.CnLunar
             for (var i = 0; i < goodThings.Count; i++)
             {
                 var goodThingString = goodThings[i].String;
-                if (!dic["badThing"].DataList.Contains(goodThingString))
+                if (dic["badThing"].DataList.Contains(goodThingString))
                 {
                     dic["goodThing"].DataList.RemoveAll(goodThingString);
                 }
@@ -1727,7 +1816,7 @@ namespace Sonic853.Udon.CnLunar
             for (var i = 0; i < badThings.Count; i++)
             {
                 var badThingString = badThings[i].String;
-                if (!dic["goodThing"].DataList.Contains(badThingString))
+                if (dic["goodThing"].DataList.Contains(badThingString))
                 {
                     dic["badThing"].DataList.RemoveAll(badThingString);
                 }
@@ -1746,6 +1835,32 @@ namespace Sonic853.Udon.CnLunar
             dic["badThing"].DataList.Clear();
             dic["badThing"].DataList.Add("诸事不宜");
             return dic;
+        }
+        public static int GetIso8601WeekOfYear(DateTime date)
+        {
+            // ISO 8601 周从星期一开始
+            DayOfWeek day = date.DayOfWeek;
+            if (day >= DayOfWeek.Monday && day <= DayOfWeek.Wednesday)
+            {
+                date = date.AddDays(3);
+            }
+
+            // 返回包含周四的那一周
+            int weekOfYear = (int)Math.Floor((double)(date.DayOfYear - (int)date.DayOfWeek + 10) / 7);
+
+            // 若需要包含一年中的最后几天，则判断这几天是否属于下一年的第一周
+            if (weekOfYear < 1)
+            {
+                date = new DateTime(date.Year - 1, 12, 31);
+                weekOfYear = GetIso8601WeekOfYear(date);
+            }
+            else if (weekOfYear > 52 && (date.Month < 12 || date.Day - (int)date.DayOfWeek + 7 <= 31))
+            {
+                date = new DateTime(date.Year + 1, 1, 1);
+                weekOfYear = 1;
+            }
+
+            return weekOfYear;
         }
     }
 }

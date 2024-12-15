@@ -1,4 +1,5 @@
 ﻿
+using System;
 using UdonSharp;
 using UnityEngine;
 using VRC.SDK3.Data;
@@ -19,12 +20,12 @@ namespace Sonic853.Udon.CnLunar
             }
             return (Holidays)obj.GetComponent(typeof(UdonBehaviour));
         }
-        public DataDictionary LegalsolarTermsHolidayDic = new DataDictionary() {
+        [NonSerialized] public DataDictionary LegalsolarTermsHolidayDic = new DataDictionary() {
             {
                 "清明", "清明节"
             },
         };
-        public DataDictionary LegalHolidaysDic = new DataDictionary() {
+        [NonSerialized] public DataDictionary LegalHolidaysDic = new DataDictionary() {
             {
                 "1,1", "元旦节"
             },
@@ -34,8 +35,11 @@ namespace Sonic853.Udon.CnLunar
             {
                 "10,1", "国庆节"
             },
+            {
+                "8,1", "建军节"
+            },
         };
-        public DataDictionary LegalLunarHolidaysDic = new DataDictionary() {
+        [NonSerialized] public DataDictionary LegalLunarHolidaysDic = new DataDictionary() {
             {
                 "1,1", "春节"
             },
@@ -52,7 +56,7 @@ namespace Sonic853.Udon.CnLunar
                 "12,30", "除夕"
             },
         };
-        public DataList OtherHolidaysList = new DataList() {
+        [NonSerialized] public DataList OtherHolidaysList = new DataList() {
             new DataDictionary() {
                 { 8, "周恩来逝世纪念日" },
                 { 10, "中国公安110宣传日" },
@@ -154,7 +158,7 @@ namespace Sonic853.Udon.CnLunar
             }, // 12月
         };
         // 复活节:每年春分后月圆第一个星期天  母亲节:每年5月份的第2个星期日  父亲节:每年6月份的第3个星期天感恩节 每年11月最后一个星期四
-        public DataDictionary OtherEastHolidaysList = new DataDictionary() {
+        [NonSerialized] public DataDictionary OtherEastHolidaysList = new DataDictionary() {
             {
                 "5,2,7", "母亲节"
             },
@@ -162,7 +166,7 @@ namespace Sonic853.Udon.CnLunar
                 "6,3,7", "父亲节"
             },
         };
-        public DataList OtherLunarHolidaysList = new DataList() {
+        [NonSerialized] public DataList OtherLunarHolidaysList = new DataList() {
             new DataDictionary() {
                 {1, "弥勒佛圣诞"},
                 {8, "五殿阎罗天子诞"},
