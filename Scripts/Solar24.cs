@@ -2,9 +2,9 @@
 // author: cuba3/Sonic853
 // github: https://github.com/OPN48/pyLunarCalendar
 using System;
-using Sonic853.Udon.ArrayPlus;
 using UdonSharp;
 using UnityEngine;
+using VRC.SDK3.Data;
 using VRC.SDKBase;
 using VRC.Udon;
 
@@ -21,15 +21,18 @@ namespace Sonic853.Udon.CnLunar
         /// <returns></returns>
         public static long[] UnZipSolarTermsList(long data, long rangeEndNum = 24, long charCountLen = 2)
         {
-            var list = new long[0];
+            var dataList = new DataList();
             for (var i = 1; i <= rangeEndNum; i++)
             {
                 var right = charCountLen * (rangeEndNum - i);
                 long x = data >> (int)right;
                 long c = 1 << (int)charCountLen;
                 Math.DivRem(x, c, out var q);
-                list = UdonArrayPlus.Insert(ref list, 0, q);
+                dataList.Add(q);
             }
+            var list = new long[dataList.Count];
+            for (var i = 0; i < dataList.Count; i++)
+                list[i] = dataList[i].Long;
             return Tools.AbListMerge(list, Config.ENC_VECTOR_LIST());
         }
         public static long[] GetTheYearAllSolarTermsList(int year)

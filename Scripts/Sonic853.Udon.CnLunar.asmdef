@@ -4,8 +4,7 @@
     "references": [
         "VRC.Udon",
         "UdonSharp.Runtime",
-        "Sonic853.UdonLab.ArrayPlus",
-        ""
+        "Sonic853.Udon.TranslateManager"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
