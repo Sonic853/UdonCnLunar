@@ -377,6 +377,10 @@ namespace Sonic853.Udon.CnLunar.Extensions
         /// </summary>
         /// <returns></returns>
         public static string GetThe28Stars(this Lunar lunar) => Lunar.GetThe28Stars(lunar.date);
+        public static string GetNayin(this Lunar lunar) => Lunar.GetNayin(lunar.day8Char);
+        public static string[] GetLuckyGodsDirection(this Lunar lunar) => Lunar.GetLuckyGodsDirection(lunar.dayHeavenNum);
+        public static string GetFetalGod(this Lunar lunar) => Lunar.GetFetalGod(lunar.day8Char);
+        public static string[] GetTwohourLuckyList(this Lunar lunar) => Lunar.GetTwohourLuckyList(lunar.dayHeavenlyEarthNum);
         public static int GetTwohourNum(this Lunar lunar) => Lunar.GetTwohourNum(lunar.date);
         public static string GetMeridians(this Lunar lunar) => Lunar.GetMeridians(lunar.twohourNum);
         /// <summary>

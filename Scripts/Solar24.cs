@@ -21,18 +21,19 @@ namespace Sonic853.Udon.CnLunar
         /// <returns></returns>
         public static long[] UnZipSolarTermsList(long data, long rangeEndNum = 24, long charCountLen = 2)
         {
-            var dataList = new DataList();
+            // Debug.Log($"data:{data} rangeEndNum:{rangeEndNum} charCountLen:{charCountLen}");
+            var list = new long[rangeEndNum];
+            var index = rangeEndNum - 1;
             for (var i = 1; i <= rangeEndNum; i++)
             {
                 var right = charCountLen * (rangeEndNum - i);
                 long x = data >> (int)right;
                 long c = 1 << (int)charCountLen;
                 Math.DivRem(x, c, out var q);
-                dataList.Add(q);
+                // Debug.Log($"right:{right}, x:{x}, c:{c}, q:{q}");
+                list[index] = q;
+                index--;
             }
-            var list = new long[dataList.Count];
-            for (var i = 0; i < dataList.Count; i++)
-                list[i] = dataList[i].Long;
             return Tools.AbListMerge(list, Config.ENC_VECTOR_LIST());
         }
         public static long[] GetTheYearAllSolarTermsList(int year)

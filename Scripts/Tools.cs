@@ -14,6 +14,8 @@ namespace Sonic853.Udon.CnLunar
             for (var i = 0; i < a.Length; i++)
             {
                 c[i] = a[i] + b[i] * type;
+                // Debug.Log($"a:{a[i]} b:{b[i]} type:{type}");
+                // Debug.Log($"c:{c[i]}");
             }
             return c;
         }

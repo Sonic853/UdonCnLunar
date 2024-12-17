@@ -82,8 +82,10 @@ namespace Sonic853.Udon.CnLunar
         public string todayLevelName;
         public string thingLevelName;
         public bool isDe;
+        [SerializeField] bool runAtStart = false;
         void Start()
         {
+            if (!runAtStart) { return; }
             var _date = DateTime.Now;
             if (!string.IsNullOrEmpty(dateString)) DateTime.TryParse(dateString, out _date);
             Init(_date);
@@ -183,11 +185,11 @@ namespace Sonic853.Udon.CnLunar
             );
             meridians = this.GetMeridians();
 
-            var legalHolidays = this.GetLegalHolidays();
-            var otherHolidays = this.GetOtherHolidays();
+            // var legalHolidays = this.GetLegalHolidays();
+            // var otherHolidays = this.GetOtherHolidays();
 
-            Debug.Log(string.Join(",", legalHolidays));
-            Debug.Log(string.Join(",", otherHolidays));
+            // Debug.Log(string.Join(",", legalHolidays));
+            // Debug.Log(string.Join(",", otherHolidays));
         }
         public static int GetBeginningOfSpringX(
             int nextSolarNum,
@@ -236,11 +238,15 @@ namespace Sonic853.Udon.CnLunar
             var s = lunarMonthLong ? "大" : "小";
             return $"{lunarMonthStr}{s}";
         }
+        public static string GetLunarDayCN(int lunarDay)
+        {
+            return Config.LunarDayNameList()[(lunarDay - 1) % 30];
+        }
         public static string GetLunarCn(int lunarYear, int lunarMonth, int lunarDay, bool isLunarLeapMonth, int[] monthDaysList, out string lunarYearCn, out string lunarMonthCn, out string lunarDayCn, out bool lunarMonthLong)
         {
             lunarYearCn = GetLunarYearCN(lunarYear);
             lunarMonthCn = GetLunarMonthCN(lunarMonth, isLunarLeapMonth, monthDaysList, out lunarMonthLong);
-            lunarDayCn = Config.LunarDayNameList()[(lunarDay - 1) % 30];
+            lunarDayCn = GetLunarDayCN(lunarDay);
             return $"{lunarYearCn}年 ${lunarMonthCn}${lunarDayCn}";
         }
         /// <summary>
@@ -444,6 +450,7 @@ namespace Sonic853.Udon.CnLunar
             {
                 var day = solarTermsList[i];
                 var month = i / 2 + 1;
+                // Debug.Log($"year {year}, month {month}, day {day}");
                 solarTermsDateList[i] = new int[] { month, (int)day };
             }
             return solarTermsDateList;
@@ -509,6 +516,7 @@ namespace Sonic853.Udon.CnLunar
             nextSolarTerm = SOLAR_TERMS_NAME_LIST[nextSolarNum];
             nextSolarTermsMonth = solarTermsDateList[nextSolarNum][0];
             nextSolarTermsDay = solarTermsDateList[nextSolarNum][1];
+            // Debug.Log($"nextSolarNum:{nextSolarNum} nextSolarTerm:{nextSolarTerm} nextSolarTermYear:{year} nextSolarTermsMonth:{nextSolarTermsMonth} nextSolarTermsDay:{nextSolarTermsDay}");
             nextSolarTermYear = year;
             return todaySolarTerm;
         }
@@ -750,9 +758,9 @@ namespace Sonic853.Udon.CnLunar
             var temp = new DataList();
             var y = date.Year;
             var m = date.Month;
-            var d = date.Day;
+            // var d = date.Day;
             var wn = GetIso8601WeekOfYear(date);
-            Debug.Log($"wn:{wn}");
+            // Debug.Log($"wn:{wn}");
             var w = (int)date.DayOfWeek;
             if (w == 0) w = 7;
 
@@ -846,12 +854,69 @@ namespace Sonic853.Udon.CnLunar
             var apart = date - date2019;
             return Config.The28StarsList()[apart.Days % 28];
         }
-        // Todo: get_nayin
+        public static string GetNayin(string day8Char)
+        {
+            return Config.TheHalf60HeavenlyEarth5ElementsList()[Array.IndexOf(Config.The60HeavenlyEarth(), day8Char) / 2];
+        }
         // Todo: get_today5Elements
         // Todo: get_the9FlyStar
-        // Todo: get_luckyGodsDirection
-        // Todo: get_fetalGod
-        // Todo: get_twohourLuckyList
+        public static string[] GetLuckyGodsDirection(int dayHeavenNum)
+        {
+            var directionList = Config.DirectionList();
+            var _chinese8Trigrams = Config.Chinese8Trigrams();
+            var chinese8Trigrams = new string[_chinese8Trigrams.Length];
+            for (var i = 0; i < _chinese8Trigrams.Length; i++)
+            {
+                chinese8Trigrams[i] = _chinese8Trigrams[i].ToString();
+            }
+            var luckyGodDirection = Config.LuckyGodDirection();
+            var wealthGodDirection = Config.WealthGodDirection();
+            var mascotGodDirection = Config.MascotGodDirection();
+            var sunNobleDirection = Config.SunNobleDirection();
+            var moonNobleDirection = Config.MoonNobleDirection();
+            return new string[] {
+                $"喜神{directionList[Array.IndexOf(chinese8Trigrams, luckyGodDirection[dayHeavenNum].ToString())]}",
+                $"财神{directionList[Array.IndexOf(chinese8Trigrams, wealthGodDirection[dayHeavenNum].ToString())]}",
+                $"福神{directionList[Array.IndexOf(chinese8Trigrams, mascotGodDirection[dayHeavenNum].ToString())]}",
+                $"阳贵{directionList[Array.IndexOf(chinese8Trigrams, sunNobleDirection[dayHeavenNum].ToString())]}",
+                $"阴贵{directionList[Array.IndexOf(chinese8Trigrams, moonNobleDirection[dayHeavenNum].ToString())]}",
+            };
+        }
+        public static string GetFetalGod(string day8Char)
+        {
+            return Config.FetalGodList()[Array.IndexOf(Config.The60HeavenlyEarth(), day8Char)];
+        }
+        private static DataList tmp2List(int tmp)
+        {
+            var result = new DataList();
+            for (int i = 1; i <= 12; i++)
+            {
+                // 判断 tmp 的第 (12 - i) 位是否为 1
+                if ((tmp & (1 << (12 - i))) > 0)
+                {
+                    result.Add("凶");
+                }
+                else
+                {
+                    result.Add("吉");
+                }
+            }
+            return result;
+        }
+        public static string[] GetTwohourLuckyList(int dayHeavenlyEarthNum)
+        {
+            var todayNum = dayHeavenlyEarthNum;
+            var tomorrowNum = (dayHeavenlyEarthNum + 1) % 60;
+            var twohourLuckyTimeList = Config.TwoHourLuckyTimeList();
+            var list = tmp2List(twohourLuckyTimeList[todayNum]);
+            list.AddRange(tmp2List(twohourLuckyTimeList[tomorrowNum]));
+            var strings = new string[list.Count];
+            for (var i = 0; i < list.Count; i++)
+            {
+                strings[i] = list[i].String;
+            }
+            return strings;
+        }
         public static int GetTwohourNum(DateTime date) => (date.Hour + 1) / 2;
         public static string GetMeridians(int twohourNum) => Config.MeridiansName()[twohourNum % 12];
         /// <summary>
