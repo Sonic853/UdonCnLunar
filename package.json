@@ -2,7 +2,7 @@
     "name": "com.sonic853.udon.cnlunar",
     "version": "1.0.1",
     "displayName": "Sonic853 - Udon Chinese Lunar Calendar",
-    "description": "Udon 农历",
+    "description": "Udon 日历 - 武山王老八牌择吉老黄历",
     "unity": "2022.3",
     "homepage": "https://github.com/Sonic853/UdonCnLunar",
     "documentationUrl": "https://github.com/Sonic853/UdonCnLunar",
@@ -14,8 +14,5 @@
       "name": "Sonic853",
       "email": "sonic853@qq.com",
       "url": "https://github.com/Sonic853"
-    },
-    "vpmDependencies": {
-      "com.sonic853.udon.translate-manager": "1.x.x"
     }
   }

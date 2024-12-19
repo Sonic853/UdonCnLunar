@@ -3,8 +3,7 @@
     "rootNamespace": "",
     "references": [
         "VRC.Udon",
-        "UdonSharp.Runtime",
-        "Sonic853.Udon.TranslateManager"
+        "UdonSharp.Runtime"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
