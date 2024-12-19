@@ -113,7 +113,7 @@ namespace Sonic853.Udon.CnLunar
         /// 今日胎神
         /// </summary>
         [SerializeField] Text FetalGodTextUI;
-        [SerializeField] SkinnedMeshRenderer lunarBody;
+        public SkinnedMeshRenderer[] lunarBodys;
         // 01963B
         public Color32 normalColor = new Color32(1, 150, 59, 255);
         public Color32 holidaysColor = new Color32(253, 40, 21, 255);
@@ -141,9 +141,13 @@ namespace Sonic853.Udon.CnLunar
             for (var i = 0; i < calendarHolidayInfos.Length; i++)
             {
                 var item = calendarHolidayInfos[i];
-                if (!string.IsNullOrEmpty(item.solarTerm)) solarTermData.Add(item.solarTerm, i);
-                else if (!item.isLunarHoliday) calendarHolidayData.Add($"{item.month},{item.day}", i);
-                else lunarHolidayData.Add($"{item.month},{item.day}", i);
+                if (item.month != 0 && item.day != 0)
+                {
+                    if (!item.isLunarHoliday) calendarHolidayData.Add($"{item.month},{item.day}", i);
+                    else lunarHolidayData.Add($"{item.month},{item.day}", i);
+                    if (!string.IsNullOrEmpty(item.solarTerm) && !solarTermData.ContainsKey(item.solarTerm)) solarTermData.Add(item.solarTerm, i);
+                }
+                else if (!string.IsNullOrEmpty(item.solarTerm) && !solarTermData.ContainsKey(item.solarTerm)) solarTermData.Add(item.solarTerm, i);
             }
             if (string.IsNullOrEmpty(testDate)) UpdateUI();
             else
@@ -155,8 +159,8 @@ namespace Sonic853.Udon.CnLunar
         void UpdateUI() => UpdateUI(DateTime.Now);
         void UpdateUI(DateTime _date)
         {
-            date = _date;
-            date = new DateTime(date.Year, date.Month, date.Day);
+            if (_date == null) _date = DateTime.Now;
+            date = new DateTime(_date.Year, _date.Month, _date.Day);
             lunar.Init(date);
 
             // 文字更新
@@ -171,7 +175,20 @@ namespace Sonic853.Udon.CnLunar
             DayCnTextUI.text = $"{lunar.lunarDayCn}日";
             WeekTextUI.text = lunar.weekDayCn;
             WeekEnTextUI.text = date.DayOfWeek.ToString().ToUpper();
-            NextSolarTerm.text = $"{Lunar.GetLunarDayCN(lunar.nextSolarTermsDay)}{lunar.nextSolarTerm}";
+            // 下一个节气农历日期
+            var nextSolarTermText = "明日";
+            if (lunar.nextSolarTermsDay - 1 != date.Day)
+            {
+                Lunar.GetLunarDateNum(
+                    new DateTime(lunar.nextSolarTermYear, lunar.nextSolarTermsMonth, lunar.nextSolarTermsDay),
+                    out var nextSolarTermYearLunar,
+                    out var nextSolarTermMonthLunar,
+                    out var nextSolarTermDayLunar,
+                    out var ____, out var __, out var ___
+                );
+                nextSolarTermText = Lunar.GetLunarDayCN(nextSolarTermDayLunar);
+            }
+            NextSolarTerm.text = $"{nextSolarTermText}{lunar.nextSolarTerm}";
             var maxNum = 6;
             var _texts = new string[6];
             if (lunar.goodThings.Length < maxNum)
@@ -237,7 +254,7 @@ namespace Sonic853.Udon.CnLunar
                 foreach (var text in texts)
                     text.color = normalColor;
             }
-            var holidayText = holidays.Length > 0 ? holidays[0] : !string.IsNullOrEmpty(lunar.todaySolarTerms) ? lunar.todaySolarTerms : "";
+            var holidayText = holidays.Length > 0 ? holidays[0] : lunar.todaySolarTerms != "无" ? lunar.todaySolarTerms : "";
             if (!string.IsNullOrEmpty(holidayText) && holidayText != "无")
             {
                 foreach (var holidayUI in HolidayTextUIs)
@@ -258,13 +275,17 @@ namespace Sonic853.Udon.CnLunar
             }
             DateObjs[0].SetActive(true);
 
-            var holidayInfo = GetHolidayInfo(lunar);
+            var holidayInfo = GetHolidayInfo(lunar) ?? GeHolidayText(holidayText);
+            Debug.Log($"holidayInfo:{holidayInfo != null}");
             if (holidayInfo != null)
             {
                 if (holidayInfo.image != null)
                 {
                     foreach (var image in HolidayImageUIs)
+                    {
                         image.sprite = holidayInfo.image;
+                        if (holidayInfo.useImageColor) image.color = Color.white;
+                    }
                 }
                 var template = holidayInfo.template + 1;
                 for (var i = 0; i < DateObjs.Length; i++)
@@ -273,7 +294,7 @@ namespace Sonic853.Udon.CnLunar
                 }
             }
 
-            if (lunarBody != null)
+            if (lunarBodys.Length > 0)
             {
                 DateTime startOfYear = new DateTime(date.Year, 1, 1); // 今年第一天
                 DateTime endOfYear = new DateTime(date.Year + 1, 1, 1).AddSeconds(-1); // 今年最后一天的最后一秒
@@ -283,7 +304,8 @@ namespace Sonic853.Udon.CnLunar
                 double elapsedSeconds = (date - startOfYear).TotalSeconds;
                 var progress = (float)(elapsedSeconds / totalSeconds * 100f);
                 // Debug.Log($"totalSeconds:{totalSeconds} elapsedSeconds:{elapsedSeconds} progress:{progress}");
-                lunarBody.SetBlendShapeWeight(0, progress);
+                foreach (var lunarBody in lunarBodys)
+                    lunarBody.SetBlendShapeWeight(0, progress);
             }
         }
         CalendarHolidayInfo GetHolidayInfo(Lunar lunar)
@@ -313,11 +335,13 @@ namespace Sonic853.Udon.CnLunar
         }
         CalendarHolidayInfo GetSolarTerm(string solarTerm)
         {
+            if (string.IsNullOrEmpty(solarTerm)) return null;
             if (solarTermData.TryGetValue(solarTerm, out var index))
             {
                 return calendarHolidayInfos[index.Int];
             }
             return null;
         }
+        CalendarHolidayInfo GeHolidayText(string solarTerm) => GetSolarTerm(solarTerm);
     }
 }

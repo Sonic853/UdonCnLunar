@@ -13,6 +13,7 @@ namespace Sonic853.Udon.CnLunar
         public bool isLunarHoliday = false;
         public int month = 0;
         public int day = 0;
+        public bool useImageColor = false;
         public Sprite image;
         public int template = 0;
     }
