@@ -1,4 +1,4 @@
-# UdonCnLunar
+# Udon Chinese Lunar Calendar
 
 ![黄历宣传](https://github.com/user-attachments/assets/c71bdbd2-3a33-4bbe-bfac-98141450696c)
 
