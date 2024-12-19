@@ -1,4 +1,5 @@
 ﻿
+using System;
 using UdonSharp;
 using UnityEngine;
 using VRC.SDKBase;
@@ -340,7 +341,23 @@ namespace Sonic853.Udon.CnLunar.Extensions
             lunar.date,
             lunar.lunarMonth,
             lunar.lunarDay,
-            lunar.todaySolarTerms
+            lunar.todaySolarTerms,
+            lunar.monthDaysList
+        );
+        public static string[] GetLegalHolidays(
+            this Lunar lunar,
+            Holidays holidays,
+            DateTime date,
+            int lunarMonth,
+            int lunarDay,
+            string todaySolarTerms
+            ) => Lunar.GetLegalHolidays(
+            holidays,
+            date,
+            lunarMonth,
+            lunarDay,
+            todaySolarTerms,
+            lunar.monthDaysList
         );
         public static string[] GetOtherHolidays(this Lunar lunar) => Lunar.GetOtherHolidays(
             lunar.holidays,

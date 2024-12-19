@@ -2827,13 +2827,13 @@ namespace Sonic853.Udon.CnLunar
             var _t = new DateTime(nextSolarTermYear, twys[0], twys[1]);
             var 土王用事time = (_t - date).Days;
             // C# 下的日期相减后的负数出现与 python 的负数不一致，故做了些特殊处理
-            if (土王用事time < 0) 土王用事time--;
-            else if (土王用事time == 0)
-            {
-                var _t1 = _t.AddDays(1);
-                var 土王用事time1 = (_t1 - date).Days;
-                if (土王用事time == 土王用事time1) 土王用事time--;
-            }
+            // if (土王用事time < 0) 土王用事time--;
+            // else if (土王用事time == 0)
+            // {
+            //     var _t1 = _t.AddDays(1);
+            //     var 土王用事time1 = (_t1 - date).Days;
+            //     if (土王用事time == 土王用事time1) 土王用事time--;
+            // }
             demon["岁破"].DataList[0] = den == (yen + 6) % 12;
             demon["天罡"].DataList[0] = "卯戌巳子未寅酉辰亥午丑申"[men].ToString();
             demon["天罡"].DataList[1] = d;

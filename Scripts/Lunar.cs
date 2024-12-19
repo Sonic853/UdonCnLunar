@@ -93,7 +93,7 @@ namespace Sonic853.Udon.CnLunar
         public void Init(DateTime _date, string _godType = "8char", string _year8Char = "year")
         {
             if (_date == null) _date = DateTime.Now;
-            date = _date;
+            date = new DateTime(_date.Year, _date.Month, _date.Day);
             godType = _godType;
             year8Char = _year8Char;
             twohourNum = this.GetTwohourNum();
@@ -106,9 +106,10 @@ namespace Sonic853.Udon.CnLunar
                 out spanDays,
                 out monthDaysList
             );
-            // print('lunarYear=', self.lunarYear, 'lunarMonth=', self.lunarMonth, 'lunarDay=', self.lunarDay)
+            // print('lunarYear=', self.lunarYear, 'lunarMonth=', self.lunarMonth, 'lunarDay=', self.lunarDay, 'isLunarLeapMonth=', self.isLunarLeapMonth, 'spanDays=', self.spanDays, 'monthDaysList=', self.monthDaysList)
             var monthDaysListStr = "";
             foreach (var monthDay in monthDaysList) monthDaysListStr += monthDay + ",";
+            // Debug.Log($"lunarYear:{lunarYear}, lunarMonth:{lunarMonth}, lunarDay:{lunarDay}, isLunarLeapMonth:{isLunarLeapMonth}, spanDays:{spanDays}, monthDaysList:{monthDaysListStr}");
             // Debug.Log($"twohourNum:{twohourNum}, year:{lunarYear}, month:{lunarMonth}, day:{lunarDay}, isLunarLeapMonth:{isLunarLeapMonth}, spanDays:{spanDays}, monthDaysList:{monthDaysListStr}");
             this.GetLunarCn(
                 out lunarYearCn,
@@ -370,15 +371,17 @@ namespace Sonic853.Udon.CnLunar
             var _m = (codeYear >> 5) & 0x3;
             var _d = (codeYear >> 0) & 0x1f;
             var lunarDate = new DateTime(lunarYear, _m, _d);
-            var _spanDays = (date - lunarDate).Days;
+            int _spanDays = (date - lunarDate).Days;
+            // if (date < lunarDate) _spanDays = (lunarDate - date).Days;
+            // else _spanDays = (date - lunarDate).Days;
             // C# 下的日期相减后的负数出现与 python 的负数不一致，故做了些特殊处理
-            if (_spanDays < 0) _spanDays--;
-            else if (_spanDays == 0)
-            {
-                var date1 = date.AddDays(1);
-                var _spanDays1 = (date1 - lunarDate).Days;
-                if (_spanDays == _spanDays1) _spanDays--;
-            }
+            // if (_spanDays < 0) _spanDays--;
+            // else if (_spanDays == 0)
+            // {
+            //     var date1 = date.AddDays(1);
+            //     var _spanDays1 = (date1 - lunarDate).Days;
+            //     if (_spanDays == _spanDays1) _spanDays--;
+            // }
             spanDays = _spanDays;
             // print('date=', self.date, 'lunarDate=', lunarDate, 'lunarYear=', self.lunarYear, '_m=', _m, '_d=', _d, '_span_days=', _span_days)
             // Debug.Log($"date:{date}, lunarDate:{lunarDate}, lunarYear:{lunarYear}, _m:{_m}, _d:{_d}, _spanDays:{_spanDays}");
@@ -412,6 +415,7 @@ namespace Sonic853.Udon.CnLunar
                     GetMonthLeapMonthLeapDays(lunarYear, lunarMonth, out monthDay, out leapMonth, out leapDays, out monthDaysList);
                 }
                 lunarDay += _spanDays;
+                // Debug.Log($"_spanDays >= 0 lunarDay:{lunarDay} _spanDays:{_spanDays}");
             }
             else
             {
@@ -439,6 +443,7 @@ namespace Sonic853.Udon.CnLunar
                 }
                 // 从月份总数中倒扣 得到天数
                 lunarDay += monthDay + _spanDays;
+                // Debug.Log($"_spanDays < 0 lunarDay:{lunarDay} monthDay:{monthDay} _spanDays:{_spanDays}");
             }
         }
         public static int[][] GetSolarTermsDateList(int year)
@@ -719,7 +724,8 @@ namespace Sonic853.Udon.CnLunar
             DateTime date,
             int lunarMonth,
             int lunarDay,
-            string todaySolarTerms
+            string todaySolarTerms,
+            int[] monthDaysList
         )
         {
             var temp = new DataList();
@@ -742,7 +748,15 @@ namespace Sonic853.Udon.CnLunar
             {
                 temp.Add(value.String);
             }
-            var tempCount = temp.Count;
+            if (
+                lunarMonth == 12
+                && lunarDay == 29
+                && monthDaysList[0] == 29
+            )
+            {
+                temp.Add("除夕");
+            }
+                var tempCount = temp.Count;
             var _temp = new string[tempCount];
             for (var i = 0; i < tempCount; i++)
             {
