@@ -6,6 +6,13 @@
 
 目前只拥有最基础的功能实现（也就只是完成了 cnLunar 的 Init 会用到的方法）目前较强依赖 VRChat 相关的独有功能，如需脱离 VRChat 运行的话需要进一步修改以及优化。
 
+## 安装方法
+
+1. 从 [VCC](https://page.853lab.com/vpm-repos/) 下载最新的版本
+2. 下载节日图片资源包 [HolidayTextures-1.0.0.unitypackage](https://github.com/Sonic853/UdonCnLunar/releases/download/1.0.1/HolidayTextures-1.0.0.unitypackage) 导入到 Unity 项目中
+3. 将以下路径的预制件放置于场景中并配置设置
+   ![2024-12-20_00-19-12](https://github.com/user-attachments/assets/8a1a3549-db5b-4885-ab4b-dce6d2a4cf36)
+
 ## 美术引用
 该日历引用的照片归照片原作者所有。
 
