@@ -128,6 +128,92 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 4468005891621052888, guid: 2b6d6a76e8583184fa6af66c00701e26, type: 3}
   m_PrefabInstance: {fileID: 7426564099738759067}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &115653127 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4796813139143170406, guid: ae0f40d386d689841a7f0db620c4d825, type: 3}
+  m_PrefabInstance: {fileID: 4119075660874490703}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &115653129
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 115653127}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1804438810, guid: 661092b4961be7145bfbe56e1e62337b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MomentumTransferMethod: 0
+  DisallowTheft: 0
+  ExactGun: {fileID: 0}
+  ExactGrip: {fileID: 0}
+  allowManipulationWhenEquipped: 0
+  orientation: 1
+  AutoHold: 2
+  InteractionText: 
+  UseText: Use
+  useEventBroadcastType: 0
+  UseDownEventName: 
+  UseUpEventName: 
+  pickupDropEventBroadcastType: 0
+  PickupEventName: 
+  DropEventName: 
+  ThrowVelocityBoostMinSpeed: 1
+  ThrowVelocityBoostScale: 1
+  currentlyHeldBy: {fileID: 0}
+  pickupable: 1
+  proximity: 2
+--- !u!54 &115653130
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 115653127}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!64 &115653131
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 115653127}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -5526560867597822958, guid: 4ce325ea64e890a478bb6c716e3e2bcb, type: 3}
 --- !u!1 &296676595 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6571471929602521807, guid: 2b6d6a76e8583184fa6af66c00701e26, type: 3}
@@ -638,6 +724,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: LunarCalendar
       objectReference: {fileID: 0}
+    - target: {fileID: 4796813139143170406, guid: ae0f40d386d689841a7f0db620c4d825, type: 3}
+      propertyPath: m_Layer
+      value: 13
+      objectReference: {fileID: 0}
     - target: {fileID: 5321676471649846236, guid: ae0f40d386d689841a7f0db620c4d825, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.679
@@ -681,7 +771,16 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4796813139143170406, guid: ae0f40d386d689841a7f0db620c4d825, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 115653131}
+    - targetCorrespondingSourceObject: {fileID: 4796813139143170406, guid: ae0f40d386d689841a7f0db620c4d825, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 115653130}
+    - targetCorrespondingSourceObject: {fileID: 4796813139143170406, guid: ae0f40d386d689841a7f0db620c4d825, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 115653129}
   m_SourcePrefab: {fileID: 100100000, guid: ae0f40d386d689841a7f0db620c4d825, type: 3}
 --- !u!114 &6759095419425082614
 MonoBehaviour:
@@ -830,6 +929,10 @@ MonoBehaviour:
     ID: 562
     SerializedTypeNames:
     - VRC.Udon.UdonBehaviour
+  - gameObject: {fileID: 115653127}
+    ID: 563
+    SerializedTypeNames:
+    - VRC.SDK3.Components.VRCPickup
   portraitCameraPositionOffset: {x: 0, y: 0, z: 0}
   portraitCameraRotationOffset: {x: 0, y: 1, z: 0, w: -0.00000004371139}
   PlayerPersistence: []
