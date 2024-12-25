@@ -16,7 +16,7 @@ namespace Sonic853.Udon.CnLunar
         public Color32 normalColor = new Color32(1, 150, 59, 255);
         public Color32 holidaysColor = new Color32(253, 40, 21, 255);
         [SerializeField] Transform calendarHolidayInfos;
-        CalendarHolidayInfo[] _calendarHolidayInfos;
+        CalendarHolidayInfo[] _calendarHolidayInfos = new CalendarHolidayInfo[0];
         [SerializeField] SkinnedMeshRenderer[] lunarBodys;
         [SerializeField] CalendarRender calendarRender;
         [SerializeField] string testDate = "";
