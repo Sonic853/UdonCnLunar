@@ -2369,7 +2369,8 @@ namespace Sonic853.Udon.CnLunar
                     new DataList() { 3, 7, 13, 18, 22, 27 },
                     new DataList() { },
                     new DataList() {
-                        "嫁娶"
+                        "嫁娶",
+                        "结婚姻",
                     }
                 }
             },
