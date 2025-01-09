@@ -4,6 +4,8 @@
 
 在 VRChat 拥有自己的农历。
 
+Demo: [853的功能屋 853's Udon Room](https://vrchat.com/home/world/wrld_fa01cb8c-766c-4f36-8360-57409866d011)
+
 目前只拥有最基础的功能实现（也就只是完成了 cnLunar 的 Init 会用到的方法）目前较强依赖 VRChat 相关的独有功能，如需脱离 VRChat 运行的话需要进一步修改以及优化。
 
 ## 安装方法
