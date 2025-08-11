@@ -232,7 +232,7 @@ namespace Sonic853.Udon.CnLunar
             var thisLunarMonthDays = monthDaysList[0];
             if (isLunarLeapMonth)
             {
-                lunarMonthStr = $"闰${lunarMonthStr}";
+                lunarMonthStr = $"闰{lunarMonthStr}";
                 thisLunarMonthDays = monthDaysList[2];
             }
             lunarMonthLong = thisLunarMonthDays >= 30;
@@ -248,7 +248,7 @@ namespace Sonic853.Udon.CnLunar
             lunarYearCn = GetLunarYearCN(lunarYear);
             lunarMonthCn = GetLunarMonthCN(lunarMonth, isLunarLeapMonth, monthDaysList, out lunarMonthLong);
             lunarDayCn = GetLunarDayCN(lunarDay);
-            return $"{lunarYearCn}年 ${lunarMonthCn}${lunarDayCn}";
+            return $"{lunarYearCn}年 {lunarMonthCn}{lunarDayCn}";
         }
         /// <summary>
         /// 月相
