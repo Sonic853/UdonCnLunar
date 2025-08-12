@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c333ccfdd0cbdbc4ca30cef2dd6e6b9b, type: 3}
   m_Name: Lunar
   m_EditorClassIdentifier: 
-  serializedUdonProgramAsset: {fileID: 11400000, guid: 1362e0ea1c486fa4eb6d639155ea1547, type: 2}
+  serializedUdonProgramAsset: {fileID: 11400000, guid: 6bde1fa5b841da04c8f51b03b73c4793, type: 2}
   udonAssembly: 
   assemblyError: 
   sourceCsScript: {fileID: 11500000, guid: ca4594fa02d61bd48a053b6c8a9a943e, type: 3}

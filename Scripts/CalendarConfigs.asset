@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c333ccfdd0cbdbc4ca30cef2dd6e6b9b, type: 3}
   m_Name: CalendarConfigs
   m_EditorClassIdentifier: 
-  serializedUdonProgramAsset: {fileID: 11400000, guid: 96434940efdb2fc4aa3301dc38d3f5e8, type: 2}
+  serializedUdonProgramAsset: {fileID: 11400000, guid: 48299853d7de5ba46b9feaf3e352dcd7, type: 2}
   udonAssembly: 
   assemblyError: 
   sourceCsScript: {fileID: 11500000, guid: 6470f88c26c81fa4bbead0dc8703ca48, type: 3}

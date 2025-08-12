@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c333ccfdd0cbdbc4ca30cef2dd6e6b9b, type: 3}
   m_Name: Holidays
   m_EditorClassIdentifier: 
-  serializedUdonProgramAsset: {fileID: 11400000, guid: 98433f3c26472bf4d86d4e28b899da2c, type: 2}
+  serializedUdonProgramAsset: {fileID: 11400000, guid: 2df884baf892f444fa8a356dde54f42f, type: 2}
   udonAssembly: 
   assemblyError: 
   sourceCsScript: {fileID: 11500000, guid: da82eec8ee5e34949a2c91151d452891, type: 3}
