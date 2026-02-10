@@ -215,7 +215,7 @@ namespace Sonic853.Udon.CnLunar
             // maxNum = 5;
             // _texts = new string[5];
             GodsTextUI.text = string.Join("\n", lunar.GetLuckyGodsDirection());
-            SeasonTextUI.text = $"<b>季节</b> {lunar.lunarSeason}";
+            SeasonTextUI.text = $"<b>季节</b> {lunar.lunarSeasonName}";
             ZodiacClashTextUI.text = lunar.chineseZodiacClash;
             NayinTextUI.text = $"<b>纳音</b> {lunar.GetNayin()}";
             EastZodiacTextUI.text = $"<b>星次</b> {lunar.todayEastZodiac}";

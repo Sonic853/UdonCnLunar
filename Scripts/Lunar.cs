@@ -25,6 +25,7 @@ namespace Sonic853.Udon.CnLunar
         public DateTime date = DateTime.Now;
         public string godType = "8char";
         public string year8Char = "year";
+        public bool isYeargodDuty = true;
         public string month8Char = "";
         public string day8Char = "";
         public int twohourNum = -1;
@@ -54,8 +55,10 @@ namespace Sonic853.Udon.CnLunar
         public int yearHeavenNum = -1;
         public int monthHeavenNum = -1;
         public int dayHeavenNum = -1;
-        public int seasonType = -1;
-        public int seasonNum = -1;
+        public int lunarSeasonType = -1;
+        public int lunarSeasonNum = -1;
+        public string lunarMonthType = "";
+        public string lunarSeasonName = "";
         public string lunarSeason = "";
         public string[] twohour8CharList = new string[0];
         public string twohour8Char = "";
@@ -90,12 +93,13 @@ namespace Sonic853.Udon.CnLunar
             if (!string.IsNullOrEmpty(dateString)) DateTime.TryParse(dateString, out _date);
             Init(_date);
         }
-        public void Init(DateTime _date, string _godType = "8char", string _year8Char = "year")
+        public void Init(DateTime _date, string _godType = "8char", string _year8Char = "year", string yeargod = "duty")
         {
             if (_date == null) _date = DateTime.Now;
             date = new DateTime(_date.Year, _date.Month, _date.Day);
             godType = _godType;
             year8Char = _year8Char;
+            isYeargodDuty = yeargod == "duty";
             twohourNum = this.GetTwohourNum();
             isLunarLeapMonth = false;
             this.GetLunarDateNum(
@@ -148,9 +152,11 @@ namespace Sonic853.Udon.CnLunar
             );
             // Debug.Log($"year8Char: {year8Char}, month8Char: {month8Char}, day8Char: {day8Char}, dayHeavenlyEarthNum: {dayHeavenlyEarthNum}, yearEarthNum: {yearEarthNum}, monthEarthNum: {monthEarthNum}, dayEarthNum: {dayEarthNum}, yearHeavenNum: {yearHeavenNum}, monthHeavenNum: {monthHeavenNum}, dayHeavenNum: {dayHeavenNum}");
             this.GetSeason(
-                out seasonType,
-                out seasonNum,
-                out lunarSeason
+                out lunarSeasonType,
+                out lunarSeasonNum,
+                out lunarMonthType,
+                out lunarSeason,
+                out lunarSeasonName
             );
             twohour8CharList = this.GetTwohour8CharList();
             twohour8Char = this.GetTwohour8Char();
@@ -168,7 +174,7 @@ namespace Sonic853.Udon.CnLunar
             );
             weekDayCn = this.GetWeekDayCn();
             starZodiac = this.GetStarZodiac();
-            // Debug.Log($"year8Char:{year8Char}, month8Char:{month8Char}, day8Char:{day8Char}, dayHeavenlyEarthNum:{dayHeavenlyEarthNum}, yearEarthNum:{yearEarthNum}, monthEarthNum:{monthEarthNum}, dayEarthNum:{dayEarthNum}, yearHeavenNum:{yearHeavenNum}, monthHeavenNum:{monthHeavenNum}, dayHeavenNum:{dayHeavenNum}, seasonType:{seasonType}, seasonNum:{seasonNum}, lunarSeason:{lunarSeason}, twohour8Char:{twohour8Char}, dayName:{dayName}, today12DayOfficer:{today12DayOfficer}, today12DayGod:{today12DayGod}, chineseYearZodiac:{chineseYearZodiac}, chineseZodiacClash:{chineseZodiacClash}, starZodiac:{starZodiac}");
+            // Debug.Log($"year8Char:{year8Char}, month8Char:{month8Char}, day8Char:{day8Char}, dayHeavenlyEarthNum:{dayHeavenlyEarthNum}, yearEarthNum:{yearEarthNum}, monthEarthNum:{monthEarthNum}, dayEarthNum:{dayEarthNum}, yearHeavenNum:{yearHeavenNum}, monthHeavenNum:{monthHeavenNum}, dayHeavenNum:{dayHeavenNum}, lunarSeasonType:{lunarSeasonType}, lunarSeasonNum:{lunarSeasonNum}, lunarSeasonName:{lunarSeasonName}, twohour8Char:{twohour8Char}, dayName:{dayName}, today12DayOfficer:{today12DayOfficer}, today12DayGod:{today12DayGod}, chineseYearZodiac:{chineseYearZodiac}, chineseZodiacClash:{chineseZodiacClash}, starZodiac:{starZodiac}");
             todayEastZodiac = this.GetEastZodiac();
             // self.thisYearSolarTermsDic = dict(zip(SOLAR_TERMS_NAME_LIST, self.thisYearSolarTermsDateList))
             thisYearSolarTermsDic = GetSolarTermsDic(thisYearSolarTermsDateList);
@@ -679,22 +685,28 @@ namespace Sonic853.Udon.CnLunar
         /// 季节
         /// </summary>
         /// <param name="monthEarthNum"></param>
-        /// <param name="seasonType"></param>
-        /// <param name="seasonNum"></param>
+        /// <param name="lunarSeasonType"></param>
+        /// <param name="lunarSeasonNum"></param>
+        /// <param name="lunarMonthType"></param>
         /// <param name="lunarSeason"></param>
+        /// <param name="lunarSeasonName"></param>
         public static void GetSeason(
             int monthEarthNum,
-            out int seasonType,
-            out int seasonNum,
-            out string lunarSeason
+            out int lunarSeasonType,
+            out int lunarSeasonNum,
+            out string lunarMonthType,
+            out string lunarSeason,
+            out string lunarSeasonName,
         )
         {
-            seasonType = monthEarthNum % 3;
-            // seasonNum = (monthEarthNum - 2) % 12 / 3;
+            lunarSeasonType = monthEarthNum % 3;
+            // lunarSeasonNum = (monthEarthNum - 2) % 12 / 3;
             var w = (monthEarthNum - 2) % 12;
             if (w < 0) w += 12;
-            seasonNum = w / 3;
-            lunarSeason = $"{"仲季孟"[seasonType]}{"春夏秋冬"[seasonNum]}";
+            lunarSeasonNum = w / 3;
+            lunarMonthType = "仲季孟"[lunarSeasonType];
+            lunarSeason = "春夏秋冬"[lunarSeasonNum];
+            lunarSeasonName = $"{lunarMonthType}{lunarSeason}";
         }
         /// <summary>
         /// 星座
@@ -1052,9 +1064,11 @@ namespace Sonic853.Udon.CnLunar
             string godType,
             string phaseOfMoon,
             string month8Char,
+            string lunarMonthType,
+            bool isYeargodDuty,
             int dayEarthNum,
             int dayHeavenlyEarthNum,
-            int seasonNum,
+            int lunarSeasonNum,
             int yearHeavenNum,
             int yearEarthNum,
             int monthEarthNum,
@@ -1156,7 +1170,7 @@ namespace Sonic853.Udon.CnLunar
             var d = day8Char;
             var den = dayEarthNum;
             var dhen = dayHeavenlyEarthNum;
-            var sn = seasonNum; // 季节
+            var sn = lunarSeasonNum; // 季节
             var yhn = yearHeavenNum;
             var yen = yearEarthNum;
             var ldn = lunarDay;
@@ -1238,11 +1252,11 @@ namespace Sonic853.Udon.CnLunar
                     gbDic["badThing"].DataList.Add("求医疗病");
             }
             // 由于正月建寅，men参数使用排序是从子开始，所以对照书籍需要将循环八字列向右移两位，也就是映射正月的是在第三个字
-            var angel = config.Angel(yhn, men, sn, den, dhen, d, s);
+            var angel = config.Angel(yhn, men, sn, den, dhen, d, s, lunarMonthType);
             var demon = config.Demon(den, yen, men, ldn, lmn, sn, nextSolarTermYear, tmd, twys, d, s, date, t4j, t4l);
 
-            GetTodayGoodBadThing(ref gbDic, angel, "goodName");
-            GetTodayGoodBadThing(ref gbDic, demon, "badName");
+            GetTodayGoodBadThing(ref gbDic, angel, "goodName", isYeargodDuty);
+            GetTodayGoodBadThing(ref gbDic, demon, "badName", isYeargodDuty);
 
             var goodNameDataList = gbDic["goodName"].DataList;
             goodGodNames = new string[goodNameDataList.Count];
@@ -1704,7 +1718,12 @@ namespace Sonic853.Udon.CnLunar
         /// <param name="godDb"></param>
         /// <param name="nameKey"></param>
         /// <returns></returns>
-        static DataDictionary GetTodayGoodBadThing(ref DataDictionary dic, DataDictionary godDb, string nameKey)
+        static DataDictionary GetTodayGoodBadThing(
+            ref DataDictionary dic,
+            DataDictionary godDb,
+            string nameKey,
+            bool isYeargodDuty
+        )
         {
             var godDbKeys = godDb.GetKeys();
             for (var i = 0; i < godDbKeys.Count; i++)
@@ -1716,6 +1735,12 @@ namespace Sonic853.Udon.CnLunar
                 var godItem3 = godItem[2].DataList;
                 var godItem4 = godItem[3].DataList;
                 // Debug.Log($"godItem0:{godItem0} godItem1T:{godItem1T} godItem2T:{godItem2T} godItem3:{godItem3} godItem4:{godItem4}");
+
+                if (!isYeargodDuty && godItem0.Contains("岁"))
+                {
+                    continue;
+                }
+
                 if (IfGodItem(godItem1T, godItem2T))
                     AddGoodBadThing(ref dic, nameKey, godItem0, godItem3, godItem4);
             }
@@ -1765,61 +1790,6 @@ namespace Sonic853.Udon.CnLunar
                         return true;
                 }
             }
-            // switch (true)
-            // {
-            //     case true
-            //     when godItem1T.TokenType == TokenType.String
-            //     && godItem2T.TokenType == TokenType.String:
-            //         {
-            //             var godItem1 = godItem1T.String;
-            //             var godItem2 = godItem2T.String;
-            //             if (godItem2.Contains(godItem1))
-            //                 return true;
-            //         }
-            //         break;
-            //     case true
-            //     when godItem1T.TokenType == TokenType.Boolean:
-            //         // && godItem2T.TokenType == TokenType.Boolean:
-            //         {
-            //             var godItem1 = godItem1T.Boolean;
-            //             if (godItem1)
-            //                 return true;
-            //         }
-            //         break;
-            //     case true
-            //     when godItem1T.TokenType == TokenType.Int:
-            //         // && godItem2T.TokenType == TokenType.DataList:
-            //         {
-            //             var godItem1 = godItem1T.Int;
-            //             var godItem2 = godItem2T.DataList;
-            //             if (godItem2.Contains(godItem1))
-            //                 return true;
-            //         }
-            //         break;
-            //     case true
-            //     when godItem1T.TokenType == TokenType.DataList:
-            //         // && godItem2T.TokenType == TokenType.DataList:
-            //         {
-            //             var godItem1 = godItem1T.DataList;
-            //             var godItem2 = godItem2T.DataList;
-            //             var godItem1First = godItem1[0].Int;
-            //             var godItem1Second = godItem1[1];
-            //             var item1IsString = godItem1Second.TokenType == TokenType.String;
-            //             for (var j = 0; j < godItem2.Count; j++)
-            //             {
-            //                 var godItem2Item = godItem2[j].DataList;
-            //                 var godItem2ItemFirst = godItem2Item[0].Int;
-            //                 if (godItem1First != godItem2ItemFirst) { continue; }
-            //                 var godItem2ItemSecond = godItem2Item[1];
-            //                 if (item1IsString && godItem1Second.String == godItem2ItemSecond.String)
-            //                     return true;
-            //                 else if (godItem1Second.TokenType == TokenType.Int
-            //                 && godItem1Second.Int == godItem2ItemSecond.Int)
-            //                     return true;
-            //             }
-            //         }
-            //         break;
-            // }
             return false;
         }
         static DataDictionary AddGoodBadThing(ref DataDictionary dic, string nameKey, string godItem0, DataList godItem3, DataList godItem4)

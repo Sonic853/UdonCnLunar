@@ -696,7 +696,7 @@ namespace Sonic853.Udon.CnLunar
                         3
                     },
                     new DataList() {
-                        "已亥",
+                        "巳亥",
                         new DataList() {
                             "满日"
                         },
@@ -728,7 +728,7 @@ namespace Sonic853.Udon.CnLunar
             {
                 "大时", new DataList() {
                     new DataList() {
-                        "寅申已亥",
+                        "寅申巳亥",
                         new DataList() {
                             "除日", "官日"
                         },
@@ -767,7 +767,7 @@ namespace Sonic853.Udon.CnLunar
             {
                 "天吏", new DataList() {
                     new DataList() {
-                        "寅申已亥",
+                        "寅申巳亥",
                         new DataList() {
                             "危日"
                         },
@@ -860,12 +860,14 @@ namespace Sonic853.Udon.CnLunar
             return body;
         }
         [NonSerialized] DataDictionary angel = new DataDictionary(){
+            // 《钦定协纪辨方书》卷三十四 年神总论 岁德岁德合岁禄马贵人山方皆吉，能制凶煞
             {
                 "岁德", new DataList() {
                     "",
                     "",
                     new DataList() {
-                        "修造", "嫁娶", "纳采", "搬移", "入宅"
+                        // "修造", "嫁娶", "纳采", "搬移", "入宅"
+                        "修造"
                     },
                     new DataList() { }
                 }
@@ -876,7 +878,8 @@ namespace Sonic853.Udon.CnLunar
                     "",
                     "",
                     new DataList() {
-                        "修造", "赴任", "嫁娶", "纳采", "搬移", "入宅", "出行"
+                        // "修造", "赴任", "嫁娶", "纳采", "搬移", "入宅", "出行"
+                        "修造"
                     },
                     new DataList() { }
                 }
@@ -1588,7 +1591,8 @@ namespace Sonic853.Udon.CnLunar
             int den,
             int dhen,
             string d,
-            string s
+            string s,
+            string lunarMonthType
         )
         {
             var denmenInt = den - men;
@@ -1602,8 +1606,10 @@ namespace Sonic853.Udon.CnLunar
             angel["月德"].DataList[1] = d[0].ToString();
             angel["月德合"].DataList[0] = "丁乙辛己丁乙辛己丁乙辛己"[men].ToString();
             angel["月德合"].DataList[1] = d[0].ToString();
-            angel["天德"].DataList[0] = "巳庚丁申壬辛亥甲癸寅丙乙"[men].ToString();
-            angel["天德"].DataList[1] = d[0].ToString();
+            // angel["天德"].DataList[0] = "巳庚丁申壬辛亥甲癸寅丙乙"[men].ToString();
+            // angel["天德"].DataList[1] = d[0].ToString();
+            angel["天德"].DataList[0] = (lunarMonthType == "仲" ? d[1] : d[0]).ToString();
+            angel["天德"].DataList[1] = new string[] { "巳辰", "庚", "丁", "申未", "壬", "辛", "亥戌", "甲", "癸", "寅丑", "丙", "乙" }[men];
             angel["天德合"].DataList[0] = "空乙壬空丁丙空己戊空辛庚"[men].ToString();
             angel["天德合"].DataList[1] = d;
             angel["凤凰日"].DataList[0] = s[0].ToString();
@@ -1780,6 +1786,17 @@ namespace Sonic853.Udon.CnLunar
                     }
                 }
             },
+            {
+                "伏兵", new DataList() {
+                    "",
+                    "",
+                    new DataList() { },
+                    new DataList() {
+                        "修仓库", "修造", "出师"
+                    }
+                }
+            },
+            // 临官为天官符忌单修
             {
                 "官符", new DataList() {
                     "",
@@ -2033,16 +2050,6 @@ namespace Sonic853.Udon.CnLunar
                     new DataList() { },
                     new DataList() {
                         "修仓库", "开市", "立券交易", "纳财", "开仓" // 历例曰：“大耗者，岁中虚耗之神也。所理之地不可营造仓库、纳财物
-                    }
-                }
-            },
-            {
-                "伏兵", new DataList() {
-                    "",
-                    "",
-                    new DataList() { },
-                    new DataList() {
-                        "修仓库", "修造", "出师"
                     }
                 }
             },

@@ -310,26 +310,34 @@ namespace Sonic853.Udon.CnLunar.Extensions
         /// </summary>
         public static void GetSeason(this Lunar lunar) => Lunar.GetSeason(
             lunar.monthEarthNum,
-            out lunar.seasonType,
-            out lunar.seasonNum,
-            out lunar.lunarSeason
+            out lunar.lunarSeasonType,
+            out lunar.lunarSeasonNum,
+            out lunar.lunarMonthType,
+            out lunar.lunarSeason,
+            out lunar.lunarSeasonName
         );
         /// <summary>
         /// 季节
         /// </summary>
-        /// <param name="seasonType"></param>
-        /// <param name="seasonNum"></param>
+        /// <param name="lunarSeasonType"></param>
+        /// <param name="lunarSeasonNum"></param>
+        /// <param name="lunarMonthType"></param>
         /// <param name="lunarSeason"></param>
+        /// <param name="lunarSeasonName"></param>
         public static void GetSeason(
             this Lunar lunar,
-            out int seasonType,
-            out int seasonNum,
-            out string lunarSeason
+            out int lunarSeasonType,
+            out int lunarSeasonNum,
+            out string lunarMonthType,
+            out string lunarSeason,
+            out string lunarSeasonName
         ) => Lunar.GetSeason(
             lunar.monthEarthNum,
-            out seasonType,
-            out seasonNum,
-            out lunarSeason
+            out lunarSeasonType,
+            out lunarSeasonNum,
+            out lunarMonthType,
+            out lunarSeason,
+            out lunarSeasonName
         );
         /// <summary>
         /// 星座
@@ -423,9 +431,11 @@ namespace Sonic853.Udon.CnLunar.Extensions
             lunar.godType,
             lunar.phaseOfMoon,
             lunar.month8Char,
+            lunar.lunarMonthType,
+            lunar.isYeargodDuty,
             lunar.dayEarthNum,
             lunar.dayHeavenlyEarthNum,
-            lunar.seasonNum,
+            lunar.lunarSeasonNum,
             lunar.yearHeavenNum,
             lunar.yearEarthNum,
             lunar.monthEarthNum,
@@ -455,9 +465,11 @@ namespace Sonic853.Udon.CnLunar.Extensions
             lunar.godType,
             lunar.phaseOfMoon,
             lunar.month8Char,
+            lunar.lunarMonthType,
+            lunar.isYeargodDuty,
             lunar.dayEarthNum,
             lunar.dayHeavenlyEarthNum,
-            lunar.seasonNum,
+            lunar.lunarSeasonNum,
             lunar.yearHeavenNum,
             lunar.yearEarthNum,
             lunar.monthEarthNum,

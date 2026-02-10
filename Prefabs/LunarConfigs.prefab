@@ -111,7 +111,7 @@ MonoBehaviour:
   dayHeavenNum: -1
   seasonType: -1
   seasonNum: -1
-  lunarSeason: 
+  lunarSeasonName: 
   twohour8CharList: []
   twohour8Char: 
   today12DayOfficer: 
