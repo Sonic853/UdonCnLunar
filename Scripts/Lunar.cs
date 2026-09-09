@@ -696,7 +696,7 @@ namespace Sonic853.Udon.CnLunar
             out int lunarSeasonNum,
             out string lunarMonthType,
             out string lunarSeason,
-            out string lunarSeasonName,
+            out string lunarSeasonName
         )
         {
             lunarSeasonType = monthEarthNum % 3;
@@ -704,8 +704,8 @@ namespace Sonic853.Udon.CnLunar
             var w = (monthEarthNum - 2) % 12;
             if (w < 0) w += 12;
             lunarSeasonNum = w / 3;
-            lunarMonthType = "仲季孟"[lunarSeasonType];
-            lunarSeason = "春夏秋冬"[lunarSeasonNum];
+            lunarMonthType = "仲季孟"[lunarSeasonType].ToString();
+            lunarSeason = "春夏秋冬"[lunarSeasonNum].ToString();
             lunarSeasonName = $"{lunarMonthType}{lunarSeason}";
         }
         /// <summary>
